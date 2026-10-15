@@ -30,6 +30,17 @@ Sitio web de un banco hecho en **PHP + MySQL + HTML/CSS/JavaScript** (sin framew
 
 > El proyecto funciona en cualquier subcarpeta: los links se arman con rutas relativas (constante `RAIZ` en `includes/funciones.php`).
 
+### Versión online (Railway)
+
+El sitio está publicado en **<https://web-production-c0fbf.up.railway.app>** (proyecto `banco-andino` en Railway: servicio `web` + servicio `MySQL`).
+
+- Railway detecta PHP por el `index.php` y lo sirve con FrankenPHP; `composer.json` declara las extensiones `mysqli` y `mbstring`.
+- `includes/conexion.php` toma los datos de la base de las variables `MYSQLHOST`, `MYSQLPORT`, `MYSQLUSER`, `MYSQLPASSWORD` y `DB_NAME`
+  (en el servicio `web` apuntan al servicio `MySQL` con referencias `${{MySQL.MYSQLHOST}}`, etc.). Si no existen, usa los valores de XAMPP.
+- `.railwayignore` evita subir `sql/` y los `.md`, para que no se puedan descargar desde el sitio.
+- Para redesplegar después de un cambio: `railway up --service web`.
+- `mail()` no envía correos en Railway (no hay servidor SMTP): las consultas se guardan igual en la base.
+
 ---
 
 ## Usuarios de prueba
