@@ -194,14 +194,14 @@ Leyenda de la columna "Consigna": número del punto del enunciado que cubre la t
   - Ver movimientos de una cuenta ajena cambiando el id en la URL → debe bloquear
   - Probar `' OR '1'='1` en el login → no debe entrar
   - Cargar `<script>alert(1)</script>` como nombre → debe mostrarse como texto
-- [x] **10.3** Revisar en celular (responsive).
+- [x] **10.3** Revisar en celular (responsive) → las 30 páginas (público, cliente, admin, operador y cambio obligatorio de contraseña) revisadas a 375 px: sin scroll horizontal, menú hamburguesa y tablas con scroll propio.
 - [x] **10.4** `README.md` con:
   - Descripción del proyecto
   - Requisitos (XAMPP/PHP/MySQL) y pasos de instalación (importar `sql/banco.sql`, ajustar `conexion.php`)
   - Usuarios de prueba con sus contraseñas en claro
   - Configuración de `mail()`
   - Mapa de qué archivo cubre cada punto de la consigna
-- [x] **10.5** Comprimir y entregar (código + `.sql` + README) → `banco-entrega.zip` (generado con `git archive`; falta subirlo al campus).
+- [ ] **10.5** Comprimir y entregar (código + `.sql` + README) → comprimido: `banco-entrega.zip` (generado con `git archive`). **Pendiente: subirlo al campus** (lo tiene que hacer el alumno).
 
 ---
 
