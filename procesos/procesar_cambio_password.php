@@ -7,7 +7,7 @@ if (!isset($_SESSION["id_usuario"])) {
     die("No hay ninguna sesión activa. Iniciá sesión primero.");
 }
 
-require_once("conexion.php");
+require_once(__DIR__ . "/../includes/conexion.php");
 
 // Guard clause: confirmamos que llegaron los 3 campos del formulario.
 if (!isset($_POST["password_actual"]) || !isset($_POST["password_nueva"]) || !isset($_POST["password_nueva_repetir"])) {

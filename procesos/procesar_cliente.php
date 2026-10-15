@@ -1,10 +1,6 @@
 <?php
 
-
-include("conexion.php");
-
-// ... el resto del archivo sigue igual, sin tocar nada más
-include("conexion.php");
+require_once(__DIR__ . "/../includes/conexion.php");
 
 function generarPasswordAleatoria($longitud = 8) {
 

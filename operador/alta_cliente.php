@@ -9,7 +9,7 @@
 
 <h2>Alta de Cliente Nuevo</h2>
 
-<form action="procesar_cliente.php" method="POST">
+<form action="../procesos/procesar_cliente.php" method="POST">
 
     <label for="nombre">Nombre:</label>
     <input type="text" id="nombre" name="nombre" required>

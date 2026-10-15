@@ -8,7 +8,7 @@ Leyenda de la columna "Consigna": número del punto del enunciado que cubre la t
 
 ## Fase 0 — Preparación
 
-- [ ] **0.1** Crear estructura de carpetas:
+- [x] **0.1** Crear estructura de carpetas:
   ```
   banco/
   ├── index.php
@@ -25,9 +25,9 @@ Leyenda de la columna "Consigna": número del punto del enunciado que cubre la t
   ├── js/validaciones.js
   └── sql/banco.sql
   ```
-- [ ] **0.2** Inicializar git y hacer un primer commit con el estado actual.
-- [ ] **0.3** Borrar archivos de prueba antes de entregar: `listar_usuarios_ejemplo.php`, `ver_sesion.php`.
-- [ ] **0.4** Renombrar `validar_loguin.php` → `validar_login.php` (y actualizar el `action` del form).
+- [x] **0.2** Inicializar git y hacer un primer commit con el estado actual.
+- [x] **0.3** Borrar archivos de prueba antes de entregar: `listar_usuarios_ejemplo.php`, `ver_sesion.php`.
+- [x] **0.4** Renombrar `validar_loguin.php` → `validar_login.php` (y actualizar el `action` del form).
 
 ---
 

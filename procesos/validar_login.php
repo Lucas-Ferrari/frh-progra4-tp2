@@ -2,7 +2,7 @@
 
 session_start();
 
-require_once("conexion.php");
+require_once(__DIR__ . "/../includes/conexion.php");
 
 if (!isset($_POST["email"]) || !isset($_POST["password"])) {
     die("Faltan datos del formulario.");
@@ -47,18 +47,18 @@ if (mysqli_num_rows($resultado) > 0) {
         $_SESSION["id_rol"] = $usuario["id_rol"];
 
         if ($usuario["debe_cambiar_password"] == 1) {
-            header("Location: cambiar_password.php");
+            header("Location: ../cambiar_password.php");
             exit;
         }
 
         if ($usuario["id_rol"] == 1) {
-            header("Location: panel_admin.php");
+            header("Location: ../admin/panel.php");
             exit;
         } elseif ($usuario["id_rol"] == 2) {
-            header("Location: panel_operador.php");
+            header("Location: ../operador/panel.php");
             exit;
         } elseif ($usuario["id_rol"] == 3) {
-            header("Location: panel_cliente.php");
+            header("Location: ../cliente/panel.php");
             exit;
         } else {
             die("Rol de usuario no reconocido.");

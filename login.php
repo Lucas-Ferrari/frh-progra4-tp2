@@ -14,10 +14,10 @@ $tipoAcceso = isset($_GET["tipo"]) ? $_GET["tipo"] : "general";
 
 <h2>Ingreso al Banco (<?php echo htmlspecialchars($tipoAcceso); ?>)</h2>
 
-<form action="validar_loguin.php" method="POST">
+<form action="procesos/validar_login.php" method="POST">
 
     <!-- Campo oculto: no lo ve el usuario, pero viaja igual que
-         email y password. Así validar_loguin.php sabe por qué
+         email y password. Así validar_login.php sabe por qué
          acceso entró la persona, para poder cruzarlo con su rol real. -->
     <input type="hidden" name="tipo_acceso" value="<?php echo htmlspecialchars($tipoAcceso); ?>">
 

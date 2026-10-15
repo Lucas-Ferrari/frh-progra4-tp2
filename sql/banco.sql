@@ -1,0 +1,1 @@
+-- Base de datos, tablas y datos de prueba (Fase 1).

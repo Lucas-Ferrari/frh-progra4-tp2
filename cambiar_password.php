@@ -24,7 +24,7 @@ if (!isset($_SESSION["id_usuario"])) {
      al usuario que está cambiando SU propia contraseña. -->
 <p>Hola, <?php echo $_SESSION["nombre"]; ?></p>
 
-<form action="procesar_cambio_password.php" method="POST">
+<form action="procesos/procesar_cambio_password.php" method="POST">
 
     <label for="password_actual">Contraseña actual:</label>
     <input type="password" id="password_actual" name="password_actual" required>
