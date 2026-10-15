@@ -1,57 +1,51 @@
 <?php
 
-// Necesitamos saber quién sos (id_usuario) para saber qué fila actualizar.
-session_start();
-
-if (!isset($_SESSION["id_usuario"])) {
-    die("No hay ninguna sesión activa. Iniciá sesión primero.");
-}
-
+require_once(__DIR__ . "/../includes/auth.php");
 require_once(__DIR__ . "/../includes/conexion.php");
 
-// Guard clause: confirmamos que llegaron los 3 campos del formulario.
-if (!isset($_POST["password_actual"]) || !isset($_POST["password_nueva"]) || !isset($_POST["password_nueva_repetir"])) {
-    die("Faltan datos del formulario.");
+requerirLogin();
+
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    redirigir("cambiar_password.php");
 }
 
-$password_actual = $_POST["password_actual"];
-$password_nueva = $_POST["password_nueva"];
-$password_nueva_repetir = $_POST["password_nueva_repetir"];
+$passwordActual = isset($_POST["password_actual"]) ? (string) $_POST["password_actual"] : "";
+$passwordNueva = isset($_POST["password_nueva"]) ? (string) $_POST["password_nueva"] : "";
+$passwordNuevaRepetir = isset($_POST["password_nueva_repetir"]) ? (string) $_POST["password_nueva_repetir"] : "";
 
-// El id_usuario sale de la SESIÓN, no del formulario.
-// Así evitamos que alguien intente cambiar la contraseña de otro usuario
-// mandando un id distinto a mano.
-$id_usuario = $_SESSION["id_usuario"];
+// El id_usuario sale de la SESIÓN, nunca del formulario: así nadie
+// puede cambiar la contraseña de otro mandando un id distinto.
+$idUsuario = (int) $_SESSION["id_usuario"];
 
-// Verificamos primero que las dos contraseñas nuevas coincidan,
-// antes de tocar la base de datos.
-if ($password_nueva !== $password_nueva_repetir) {
-    die("La contraseña nueva y su repetición no coinciden.");
+if ($passwordActual === "" || $passwordNueva === "" || $passwordNuevaRepetir === "") {
+    redirigir("cambiar_password.php?error=campos");
+}
+if (strlen($passwordNueva) < PASSWORD_LONGITUD_MINIMA) {
+    redirigir("cambiar_password.php?error=password_corta");
+}
+if ($passwordNueva !== $passwordNuevaRepetir) {
+    redirigir("cambiar_password.php?error=password_distinta");
 }
 
-// Buscamos la contraseña ACTUAL guardada, para compararla con la que
-// escribió el usuario (no confiamos en que "ya está logueado" sea
-// suficiente para cambiar la contraseña sin volver a confirmarla).
-$sql = "SELECT password FROM usuarios WHERE id_usuario = $id_usuario";
-$resultado = mysqli_query($conexion, $sql);
-$usuario = mysqli_fetch_assoc($resultado);
+// Volvemos a pedir la contraseña actual aunque ya esté logueado.
+$usuario = consultarUno($conexion, "SELECT password FROM usuarios WHERE id_usuario = ?", "i", [$idUsuario]);
 
-if ($password_actual !== $usuario["password"]) {
-    die("La contraseña actual no es correcta.");
+if ($usuario === null || !password_verify($passwordActual, $usuario["password"])) {
+    redirigir("cambiar_password.php?error=password_actual");
+}
+if ($passwordNueva === $passwordActual) {
+    redirigir("cambiar_password.php?error=password_igual");
 }
 
-// Todo validado: actualizamos la contraseña y bajamos la bandera
-// debe_cambiar_password a 0 (ya no está pendiente el cambio obligatorio).
-// WHERE id_usuario = $id_usuario es CRÍTICO: sin esto, se actualizarían
-// TODAS las filas de la tabla.
-$sqlUpdate = "UPDATE usuarios 
-              SET password = '$password_nueva', debe_cambiar_password = 0 
-              WHERE id_usuario = $id_usuario";
+$hash = password_hash($passwordNueva, PASSWORD_DEFAULT);
 
-$resultadoUpdate = mysqli_query($conexion, $sqlUpdate);
+ejecutar(
+    $conexion,
+    "UPDATE usuarios SET password = ?, debe_cambiar_password = 0 WHERE id_usuario = ?",
+    "si",
+    [$hash, $idUsuario]
+);
 
-if ($resultadoUpdate) {
-    echo "Contraseña actualizada correctamente.";
-} else {
-    echo "Error al actualizar la contraseña: " . mysqli_error($conexion);
-}
+$_SESSION["debe_cambiar_password"] = 0;
+
+redirigir(panelSegunRol(rolActual()) . "?ok=password");

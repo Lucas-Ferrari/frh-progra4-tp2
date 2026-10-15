@@ -1,47 +1,37 @@
 <?php
 
+// Alta de cliente hecha por un empleado (operador o administrador).
+
+require_once(__DIR__ . "/../includes/auth.php");
 require_once(__DIR__ . "/../includes/conexion.php");
 
-function generarPasswordAleatoria($longitud = 8) {
+requerirPasswordActualizada();
+requerirRol([ROL_ADMIN, ROL_OPERADOR]);
 
-    $pool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    $passwordGenerada = "";
-
-    for ($i = 0; $i < $longitud; $i++) {
-        $indiceAleatorio = rand(0, strlen($pool) - 1);
-        $passwordGenerada .= $pool[$indiceAleatorio];
-    }
-
-    return $passwordGenerada;
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    redirigir("operador/alta_cliente.php");
 }
 
-if (!isset($_POST["nombre"]) || !isset($_POST["apellido"]) || !isset($_POST["dni"]) || !isset($_POST["fecha_nacimiento"]) || !isset($_POST["email"])) {
-    die("Faltan datos del formulario.");
+$nombre = campo($_POST, "nombre");
+$apellido = campo($_POST, "apellido");
+$dni = campo($_POST, "dni");
+$fechaNacimiento = campo($_POST, "fecha_nacimiento");
+$email = strtolower(campo($_POST, "email"));
+
+$error = validarDatosPersonales($nombre, $apellido, $dni, $fechaNacimiento, $email);
+if ($error !== null) {
+    volverConError("operador/alta_cliente.php", $error);
+}
+if (usuarioDuplicado($conexion, $email, $dni)) {
+    volverConError("operador/alta_cliente.php", "duplicado");
 }
 
-$nombre = $_POST["nombre"];
-$apellido = $_POST["apellido"];
-$dni = $_POST["dni"];
-$fecha_nacimiento = $_POST["fecha_nacimiento"];
-$email = $_POST["email"];
+// Inserta con debe_cambiar_password = 1 y deja la contraseña provisoria
+// en la sesión para mostrarla una sola vez.
+$password = crearUsuarioConProvisoria($conexion, $nombre, $apellido, $dni, $fechaNacimiento, $email, ROL_CLIENTE);
 
-$passwordProvisoria = generarPasswordAleatoria(8);
-
-$sql = "INSERT INTO usuarios (nombre, apellido, dni, fecha_nacimiento, email, password, fecha_registro, id_rol)
-        VALUES ('$nombre', '$apellido', '$dni', '$fecha_nacimiento', '$email', '$passwordProvisoria', NOW(), 3)";
-
-$resultado = mysqli_query($conexion, $sql);
-
-if ($resultado) {
-
-    echo "Cliente cargado correctamente.";
-    echo "<br>";
-    echo "Contraseña provisoria: " . $passwordProvisoria;
-    echo "<br>";
-    echo "Entregale esta contraseña al cliente. Deberá cambiarla en su primer ingreso.";
-
-} else {
-
-    echo "Error al cargar el cliente: " . mysqli_error($conexion);
-
+if ($password === null) {
+    volverConError("operador/alta_cliente.php", "db");
 }
+
+redirigir("operador/alta_cliente.php?ok=cliente");

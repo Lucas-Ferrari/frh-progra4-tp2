@@ -1,39 +1,56 @@
 <?php
 
-$tipoAcceso = isset($_GET["tipo"]) ? $_GET["tipo"] : "general";
+require_once(__DIR__ . "/includes/funciones.php");
+
+// Si ya hay sesión, va directo a su panel.
+if (estaLogueado()) {
+    redirigir(panelSegunRol(rolActual()));
+}
+
+// Tipo de acceso elegido: los clientes entran por "cliente" y los
+// empleados (administradores y operadores) por "empleado".
+$tipoAcceso = valorAnterior("tipo_acceso", isset($_GET["tipo"]) ? $_GET["tipo"] : "cliente");
+if ($tipoAcceso !== "empleado") {
+    $tipoAcceso = "cliente";
+}
+
+$titulo = "Ingresar";
+require_once(__DIR__ . "/includes/header.php");
 
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Banco - Login</title>
-</head>
 
-<body>
+<section class="tarjeta formulario formulario-centrado">
+    <h1>Ingresar</h1>
 
-<h2>Ingreso al Banco (<?php echo htmlspecialchars($tipoAcceso); ?>)</h2>
+    <form action="procesos/validar_login.php" method="POST" novalidate>
 
-<form action="procesos/validar_login.php" method="POST">
+        <div class="campo">
+            <label>Tipo de acceso</label>
+            <div class="opciones-radio">
+                <label>
+                    <input type="radio" name="tipo_acceso" value="cliente" <?php echo $tipoAcceso === "cliente" ? "checked" : ""; ?>>
+                    Clientes
+                </label>
+                <label>
+                    <input type="radio" name="tipo_acceso" value="empleado" <?php echo $tipoAcceso === "empleado" ? "checked" : ""; ?>>
+                    Empleados
+                </label>
+            </div>
+        </div>
 
-    <!-- Campo oculto: no lo ve el usuario, pero viaja igual que
-         email y password. Así validar_login.php sabe por qué
-         acceso entró la persona, para poder cruzarlo con su rol real. -->
-    <input type="hidden" name="tipo_acceso" value="<?php echo htmlspecialchars($tipoAcceso); ?>">
+        <div class="campo">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autocomplete="username" value="<?php echo e(valorAnterior("email")); ?>">
+        </div>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
+        <div class="campo">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
 
-    <br><br>
+        <button type="submit" class="boton">Ingresar</button>
+        <p class="texto-suave">¿No tenés cuenta? <a href="registro.php">Registrate</a></p>
+    </form>
+</section>
 
-    <label for="password">Contraseña:</label>
-    <input type="password" id="password" name="password" required>
-
-    <br><br>
-
-    <button type="submit">Ingresar</button>
-
-</form>
-
-</body>
-</html>
+<?php require_once(__DIR__ . "/includes/footer.php"); ?>

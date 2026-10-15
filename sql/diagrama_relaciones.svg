@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+  <title>Banco — Diagrama de relaciones</title>
+  <rect width="1000" height="620" fill="#f3f6fa"/>
+  <text x="500" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#0b2545">Base de datos «banco» — Diagrama de relaciones</text>
+
+  <defs>
+    <marker id="muchos" viewBox="0 0 20 20" refX="18" refY="10" markerWidth="14" markerHeight="14" orient="auto-start-reverse">
+      <path d="M0 10 L18 10 M18 2 L4 10 L18 18" fill="none" stroke="#1d4e89" stroke-width="2"/>
+    </marker>
+    <marker id="uno" viewBox="0 0 20 20" refX="18" refY="10" markerWidth="14" markerHeight="14" orient="auto-start-reverse">
+      <path d="M0 10 L18 10 M12 3 L12 17" fill="none" stroke="#1d4e89" stroke-width="2"/>
+    </marker>
+  </defs>
+
+  <!-- roles -->
+  <g transform="translate(40,80)">
+    <rect width="200" height="84" rx="8" fill="#fff" stroke="#13315c" stroke-width="2"/>
+    <rect width="200" height="28" rx="8" fill="#13315c"/><rect y="20" width="200" height="8" fill="#13315c"/>
+    <text x="100" y="19" text-anchor="middle" fill="#fff" font-weight="700">roles</text>
+    <text x="12" y="50">🔑 id_rol  INT</text>
+    <text x="12" y="70">nombre  VARCHAR(30) UQ</text>
+  </g>
+
+  <!-- usuarios -->
+  <g transform="translate(330,70)">
+    <rect width="250" height="264" rx="8" fill="#fff" stroke="#13315c" stroke-width="2"/>
+    <rect width="250" height="28" rx="8" fill="#13315c"/><rect y="20" width="250" height="8" fill="#13315c"/>
+    <text x="125" y="19" text-anchor="middle" fill="#fff" font-weight="700">usuarios</text>
+    <text x="12" y="50">🔑 id_usuario  INT</text>
+    <text x="12" y="70">nombre  VARCHAR(50)</text>
+    <text x="12" y="90">apellido  VARCHAR(50)</text>
+    <text x="12" y="110">dni  VARCHAR(8) UQ</text>
+    <text x="12" y="130">fecha_nacimiento  DATE</text>
+    <text x="12" y="150">email  VARCHAR(100) UQ</text>
+    <text x="12" y="170">password  VARCHAR(255) (hash)</text>
+    <text x="12" y="190">debe_cambiar_password  TINYINT</text>
+    <text x="12" y="210">activo  TINYINT</text>
+    <text x="12" y="230">fecha_registro  DATETIME</text>
+    <text x="12" y="250" fill="#0a7c6f" font-weight="600">FK id_rol → roles</text>
+  </g>
+
+  <!-- cuentas -->
+  <g transform="translate(680,70)">
+    <rect width="270" height="204" rx="8" fill="#fff" stroke="#0e9f8e" stroke-width="2"/>
+    <rect width="270" height="28" rx="8" fill="#0e9f8e"/><rect y="20" width="270" height="8" fill="#0e9f8e"/>
+    <text x="135" y="19" text-anchor="middle" fill="#fff" font-weight="700">cuentas (contenido principal)</text>
+    <text x="12" y="50">🔑 id_cuenta  INT</text>
+    <text x="12" y="70">numero_cuenta  VARCHAR(20) UQ</text>
+    <text x="12" y="90">tipo  ENUM(Caja de ahorro, Cta. cte.)</text>
+    <text x="12" y="110">moneda  ENUM(ARS, USD)</text>
+    <text x="12" y="130">saldo  DECIMAL(12,2)</text>
+    <text x="12" y="150">fecha_apertura  DATETIME</text>
+    <text x="12" y="170">activa  TINYINT (baja lógica)</text>
+    <text x="12" y="190" fill="#0a7c6f" font-weight="600">FK id_usuario → usuarios</text>
+  </g>
+
+  <!-- movimientos -->
+  <g transform="translate(680,380)">
+    <rect width="270" height="164" rx="8" fill="#fff" stroke="#13315c" stroke-width="2"/>
+    <rect width="270" height="28" rx="8" fill="#13315c"/><rect y="20" width="270" height="8" fill="#13315c"/>
+    <text x="135" y="19" text-anchor="middle" fill="#fff" font-weight="700">movimientos</text>
+    <text x="12" y="50">🔑 id_movimiento  INT</text>
+    <text x="12" y="70">fecha  DATETIME</text>
+    <text x="12" y="90">tipo  ENUM(Depósito, Extracción, Transf.)</text>
+    <text x="12" y="110">monto  DECIMAL(12,2) (con signo)</text>
+    <text x="12" y="130">descripcion  VARCHAR(150)</text>
+    <text x="12" y="150" fill="#0a7c6f" font-weight="600">FK id_cuenta → cuentas</text>
+  </g>
+
+  <!-- contactos -->
+  <g transform="translate(330,400)">
+    <rect width="250" height="184" rx="8" fill="#fff" stroke="#13315c" stroke-width="2"/>
+    <rect width="250" height="28" rx="8" fill="#13315c"/><rect y="20" width="250" height="8" fill="#13315c"/>
+    <text x="125" y="19" text-anchor="middle" fill="#fff" font-weight="700">contactos</text>
+    <text x="12" y="50">🔑 id_contacto  INT</text>
+    <text x="12" y="70">nombre  VARCHAR(100)</text>
+    <text x="12" y="90">email  VARCHAR(100)</text>
+    <text x="12" y="110">asunto  VARCHAR(150)</text>
+    <text x="12" y="130">mensaje  TEXT · fecha  DATETIME</text>
+    <text x="12" y="150">leido  TINYINT</text>
+    <text x="12" y="170" fill="#0a7c6f" font-weight="600">FK id_usuario → usuarios (NULL)</text>
+  </g>
+
+  <!-- relaciones -->
+  <g stroke="#1d4e89" stroke-width="2" fill="none">
+    <path d="M240 122 L330 122" marker-start="url(#uno)" marker-end="url(#muchos)"/>
+    <path d="M580 160 L680 160" marker-start="url(#uno)" marker-end="url(#muchos)"/>
+    <path d="M815 274 L815 380" marker-start="url(#uno)" marker-end="url(#muchos)"/>
+    <path d="M455 334 L455 400" marker-start="url(#uno)" marker-end="url(#muchos)" stroke-dasharray="6 4"/>
+  </g>
+  <g fill="#1d4e89" font-size="12" font-style="italic">
+    <text x="250" y="114">1 : N</text>
+    <text x="602" y="152">1 : N</text>
+    <text x="824" y="332">1 : N</text>
+    <text x="464" y="372">0..1 : N</text>
+  </g>
+
+  <text x="40" y="606" fill="#5b6b7c" font-size="12">🔑 clave primaria · UQ único · FK clave foránea · línea punteada = relación opcional</text>
+</svg>
