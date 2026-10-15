@@ -1,0 +1,10 @@
+{
+    "name": "frh/banco-andino",
+    "description": "Banco Andino - Proyecto integrador Programación IV",
+    "type": "project",
+    "require": {
+        "php": ">=8.2",
+        "ext-mysqli": "*",
+        "ext-mbstring": "*"
+    }
+}

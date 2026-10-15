@@ -1,49 +1,48 @@
 <?php
 
-// Necesitamos saber quién sos para mostrarle el formulario a la persona correcta.
-session_start();
+require_once(__DIR__ . "/includes/auth.php");
 
-// Guard clause: si no hay sesión activa, no tiene sentido mostrar este formulario.
-if (!isset($_SESSION["id_usuario"])) {
-    die("No hay ninguna sesión activa. Iniciá sesión primero.");
-}
+// Solo pedimos login: esta es justamente la página a la que se
+// redirige cuando la contraseña está pendiente de cambio.
+requerirLogin();
+
+$obligatorio = !empty($_SESSION["debe_cambiar_password"]);
+
+$titulo = "Cambiar contraseña";
+require_once(__DIR__ . "/includes/header.php");
 
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Banco - Cambiar Contraseña</title>
-</head>
 
-<body>
+<section class="tarjeta formulario formulario-centrado">
+    <h1>Cambiar contraseña</h1>
 
-<h2>Cambiar Contraseña</h2>
+    <?php if ($obligatorio): ?>
+        <div class="mensaje mensaje-info">
+            Hola, <?php echo e($_SESSION["nombre"]); ?>. Estás usando una contraseña provisoria:
+            tenés que elegir una nueva para continuar.
+        </div>
+    <?php endif; ?>
 
-<!-- Saludo simple usando el nombre guardado en sesión, para confirmarle
-     al usuario que está cambiando SU propia contraseña. -->
-<p>Hola, <?php echo $_SESSION["nombre"]; ?></p>
+    <form action="procesos/procesar_cambio_password.php" method="POST" novalidate>
 
-<form action="procesar_cambio_password.php" method="POST">
+        <div class="campo">
+            <label for="password_actual"><?php echo $obligatorio ? "Contraseña provisoria" : "Contraseña actual"; ?></label>
+            <input type="password" id="password_actual" name="password_actual" required autocomplete="current-password">
+        </div>
 
-    <label for="password_actual">Contraseña actual:</label>
-    <input type="password" id="password_actual" name="password_actual" required>
+        <div class="campo">
+            <label for="password_nueva">Contraseña nueva</label>
+            <input type="password" id="password_nueva" name="password_nueva" required autocomplete="new-password" data-password-min="<?php echo PASSWORD_LONGITUD_MINIMA; ?>">
+            <span class="ayuda">Mínimo <?php echo PASSWORD_LONGITUD_MINIMA; ?> caracteres.</span>
+        </div>
 
-    <br><br>
+        <div class="campo">
+            <label for="password_nueva_repetir">Repetir contraseña nueva</label>
+            <input type="password" id="password_nueva_repetir" name="password_nueva_repetir" required autocomplete="new-password" data-igual-a="password_nueva">
+        </div>
 
-    <label for="password_nueva">Contraseña nueva:</label>
-    <input type="password" id="password_nueva" name="password_nueva" required>
+        <button type="submit" class="boton">Cambiar contraseña</button>
+    </form>
+</section>
 
-    <br><br>
-
-    <label for="password_nueva_repetir">Repetir contraseña nueva:</label>
-    <input type="password" id="password_nueva_repetir" name="password_nueva_repetir" required>
-
-    <br><br>
-
-    <button type="submit">Cambiar Contraseña</button>
-
-</form>
-
-</body>
-</html>
+<?php require_once(__DIR__ . "/includes/footer.php"); ?>

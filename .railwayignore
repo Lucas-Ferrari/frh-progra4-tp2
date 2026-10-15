@@ -1,0 +1,5 @@
+# Archivos que no se suben a Railway (no hacen falta para que el sitio funcione)
+sql/
+*.md
+banco-entrega.zip
+.gitignore
