@@ -3,6 +3,8 @@
 // Funciones y constantes que usa todo el sitio.
 // Se incluye (directa o indirectamente) en todas las páginas.
 
+date_default_timezone_set("America/Argentina/Buenos_Aires");
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
