@@ -30,33 +30,21 @@ require_once(__DIR__ . "/../includes/header.php");
 <h2>Mis cuentas</h2>
 
 <?php if (count($cuentas) === 0): ?>
-    <div class="tarjeta vacio">No tenés cuentas activas. Acercate a una sucursal para abrir una.</div>
+    <div class="tarjeta vacio">No tenés cuentas activas. Acercate a la sucursal para abrir una.</div>
 <?php else: ?>
-    <div class="tarjeta tabla-contenedor">
-        <table class="tabla">
-            <thead>
-                <tr>
-                    <th>Número</th>
-                    <th>Tipo</th>
-                    <th>Moneda</th>
-                    <th class="texto-derecha">Saldo</th>
-                    <th>Apertura</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($cuentas as $cuenta): ?>
-                    <tr>
-                        <td><?php echo e($cuenta["numero_cuenta"]); ?></td>
-                        <td><?php echo e($cuenta["tipo"]); ?></td>
-                        <td><?php echo e($cuenta["moneda"]); ?></td>
-                        <td class="texto-derecha"><?php echo e(formatoMonto($cuenta["saldo"], $cuenta["moneda"])); ?></td>
-                        <td><?php echo e(formatoFecha($cuenta["fecha_apertura"], false)); ?></td>
-                        <td><a href="movimientos.php?id_cuenta=<?php echo (int) $cuenta["id_cuenta"]; ?>">Movimientos</a></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+    <div class="cuentas">
+        <?php foreach ($cuentas as $cuenta): ?>
+            <article class="cuenta">
+                <span class="cuenta-tipo"><?php echo e(ucfirst($cuenta["tipo"])); ?> en <?php echo e($cuenta["moneda"]); ?></span>
+                <span class="cuenta-numero">N.º <?php echo e($cuenta["numero_cuenta"]); ?></span>
+                <span class="monto"><?php echo e(formatoMonto($cuenta["saldo"], $cuenta["moneda"])); ?></span>
+                <span class="texto-suave">Saldo disponible</span>
+                <div class="cuenta-pie">
+                    <span>Desde <?php echo e(formatoFecha($cuenta["fecha_apertura"], false)); ?></span>
+                    <a href="movimientos.php?id_cuenta=<?php echo (int) $cuenta["id_cuenta"]; ?>">Ver movimientos</a>
+                </div>
+            </article>
+        <?php endforeach; ?>
     </div>
 <?php endif; ?>
 

@@ -3,3 +3,6 @@ sql/
 *.md
 banco-entrega.zip
 .gitignore
+.agents/
+skills-lock.json
+.playwright-mcp/
