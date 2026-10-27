@@ -20,6 +20,43 @@ document.addEventListener("DOMContentLoaded", function () {
         botonMenu.addEventListener("click", function () {
             var abierto = menu.classList.toggle("abierto");
             botonMenu.setAttribute("aria-expanded", abierto ? "true" : "false");
+            botonMenu.setAttribute("aria-label", abierto ? "Cerrar menú" : "Abrir menú");
+        });
+    }
+
+    // ---------- Aparición al hacer scroll ----------
+    // Solo se ocultan los bloques que están debajo de la pantalla al cargar,
+    // así nada de lo que ya se ve "parpadea".
+    var animar = "IntersectionObserver" in window &&
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (animar) {
+        var observador = new IntersectionObserver(function (entradas) {
+            entradas.forEach(function (entrada) {
+                if (entrada.isIntersecting) {
+                    entrada.target.classList.add("visible");
+                    observador.unobserve(entrada.target);
+                }
+            });
+        }, { rootMargin: "0px 0px -10% 0px" });
+
+        var bloques = document.querySelectorAll(
+            ".contenido > *:not(.grilla):not(.menu-panel):not(.mensaje), .grilla > *, .menu-panel > *, .portada-visual > *"
+        );
+
+        bloques.forEach(function (bloque) {
+            var enPantalla = bloque.getBoundingClientRect().top < window.innerHeight * 0.9;
+            // La portada se anima siempre: es el primer momento de la página.
+            if (enPantalla && !bloque.closest(".portada")) {
+                return;
+            }
+            var hermanos = bloque.parentElement.children;
+            var indice = Array.prototype.indexOf.call(hermanos, bloque);
+            if (bloque.parentElement.matches(".grilla, .menu-panel, .portada-visual")) {
+                bloque.style.setProperty("--retraso", (indice * 0.09) + "s");
+            }
+            bloque.classList.add("revelar");
+            observador.observe(bloque);
         });
     }
 
