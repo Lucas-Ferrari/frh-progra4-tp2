@@ -9,7 +9,7 @@
         </div>
         <div class="pie-links">
             <a href="<?php echo RAIZ; ?>contacto.php">Contacto</a>
-            <span>&copy; <?php echo date("Y"); ?> Banco Andino — Proyecto académico, Programación IV</span>
+            <span>&copy; <?php echo date("Y"); ?> Banco Andino — banco ficticio, proyecto académico de Programación IV</span>
         </div>
     </div>
 </footer>

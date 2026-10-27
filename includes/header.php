@@ -24,7 +24,7 @@ function claseActivo($archivo)
     <title>Banco Andino - <?php echo e($titulo); ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo RAIZ; ?>css/estilos.css">
     <script src="<?php echo RAIZ; ?>js/validaciones.js" defer></script>
 </head>
@@ -50,7 +50,7 @@ function claseActivo($archivo)
                     <li><a href="<?php echo RAIZ; ?>contacto.php"<?php echo claseActivo("contacto.php"); ?>>Contacto</a></li>
                     <li><a href="<?php echo RAIZ; ?>cambiar_password.php"<?php echo claseActivo("cambiar_password.php"); ?>>Cambiar contraseña</a></li>
                     <li class="menu-usuario">
-                        <span title="<?php echo e(nombreRol(rolActual())); ?>">👤 <?php echo e($_SESSION["nombre"]); ?></span>
+                        <span title="<?php echo e(nombreRol(rolActual())); ?>"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-6 6c0-3 2.7-4.5 6-4.5s6 1.5 6 4.5H2Z"/></svg><?php echo e($_SESSION["nombre"]); ?></span>
                         <a href="<?php echo RAIZ; ?>logout.php" class="boton boton-chico boton-claro">Salir</a>
                     </li>
                 <?php else: ?>
