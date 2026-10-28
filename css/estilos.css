@@ -112,8 +112,8 @@
     box-sizing: border-box;
 }
 
-/* scroll-padding-top: el header sticky (68px) no tapa lo que se enfoca o se ancla */
-html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+/* scroll-padding-top: el header sticky no tapa lo que se enfoca o se ancla */
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--alto-header, 68px) + 16px); }
 
 body {
     margin: 0;
@@ -218,7 +218,7 @@ code {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 68px;
+    min-height: var(--alto-header, 68px);
     gap: 16px;
 }
 
@@ -229,7 +229,7 @@ code {
     color: var(--titulos);
     text-decoration: none;
     font-weight: 800;
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     letter-spacing: -0.02em;
 }
 
@@ -853,7 +853,7 @@ fieldset.campo {
     .menu {
         display: none;
         position: absolute;
-        top: 68px;
+        top: var(--alto-header, 68px);
         left: 0;
         right: 0;
         background: var(--superficie);
@@ -1663,7 +1663,7 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
    y el <main> sube esos 68px por debajo de él. Cada primera banda violeta
    sube un poco más para empezar detrás del header.
    ===================================================================== */
-:root { --alto-header: 68px; }
+:root { --alto-header: 76px; } /* un poco más alta: más presencia */
 
 .js .contenido {
     margin-top: calc(var(--alto-header) * -1);
@@ -1691,7 +1691,9 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
    Solo si: hay JS, todavía no se bajó, la página empieza con violeta
    (no con un mensaje) y el menú del celular está cerrado. */
 .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra):not(:has(.menu.abierto)) {
-    background: transparent;
+    /* Velo de tinta semitransparente: la barra se distingue como franja
+       (un escalón de tono más oscuro) y el violeta de abajo se sigue viendo */
+    background: rgba(13, 8, 38, 0.24);
     --titulos: #ffffff;           /* logo, íconos y hamburguesa en blanco */
     --gris-fondo: rgba(255, 255, 255, 0.16);
     transition: background 0.3s var(--ease), box-shadow 0.25s var(--ease);
@@ -1705,13 +1707,13 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
    (En celular el menú es un desplegable claro y conserva sus colores.) */
 @media (min-width: 861px) {
     .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu a {
-        color: rgba(255, 255, 255, 0.85);
+        color: #ffffff;
     }
 
     .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu a:hover,
     .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu a.activo {
         color: #ffffff;
-        background: rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.18);
     }
 
     /* "Ingresar" / "Salir": botón transparente con borde blanco */
