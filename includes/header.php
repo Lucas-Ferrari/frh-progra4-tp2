@@ -32,6 +32,9 @@ function claseActivo($archivo)
     <script>
         // Va antes del CSS para que no haya un parpadeo de color: aplica el tema
         // que la persona eligió con el botón. Si nunca eligió, manda el sistema.
+        // La clase "js" habilita la barra transparente: sin JS la barra nunca
+        // pasaría a sólida al bajar, así que en ese caso queda sólida siempre.
+        document.documentElement.classList.add("js");
         try {
             var temaGuardado = localStorage.getItem("tema");
             if (temaGuardado === "oscuro" || temaGuardado === "claro") {

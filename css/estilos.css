@@ -1652,3 +1652,112 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
     .boton-tema { margin-left: auto; order: 1; }
     .menu-boton { order: 2; }
 }
+
+/* =====================================================================
+   Barra transparente sobre el violeta
+   Arriba de todo, el header deja ver el violeta del hero o de la banda de
+   cada página (se leen como un solo bloque). Al bajar, animaciones.js le
+   pone .con-sombra y vuelve a ser sólido: siempre queda fijo para navegar.
+
+   Cómo se superpone: el header sigue siendo sticky (ocupa 68px en el flujo)
+   y el <main> sube esos 68px por debajo de él. Cada primera banda violeta
+   sube un poco más para empezar detrás del header.
+   ===================================================================== */
+:root { --alto-header: 68px; }
+
+.js .contenido {
+    margin-top: calc(var(--alto-header) * -1);
+    padding-top: calc(var(--alto-header) + 32px);
+}
+
+/* Las bandas que arrancan la página suben hasta el borde superior */
+.js .contenido > .portada:first-child {
+    margin-top: calc((var(--alto-header) + 32px) * -1);
+    padding-top: calc(96px + var(--alto-header));
+}
+
+.js .contenido > h1:first-child,
+.js .contenido > .encabezado-seccion:first-child {
+    margin-top: calc((var(--alto-header) + 32px) * -1);
+    padding-top: calc(48px + var(--alto-header));
+}
+
+.js .contenido > .formulario-centrado:first-child::before {
+    top: calc((var(--alto-header) + 32px) * -1);
+    height: calc(200px + var(--alto-header));
+}
+
+/* ---------- Estado transparente ----------
+   Solo si: hay JS, todavía no se bajó, la página empieza con violeta
+   (no con un mensaje) y el menú del celular está cerrado. */
+.js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra):not(:has(.menu.abierto)) {
+    background: transparent;
+    --titulos: #ffffff;           /* logo, íconos y hamburguesa en blanco */
+    --gris-fondo: rgba(255, 255, 255, 0.16);
+    transition: background 0.3s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.encabezado {
+    transition: background 0.3s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+/* En escritorio el menú está en la barra: links en blanco sobre el violeta.
+   (En celular el menú es un desplegable claro y conserva sus colores.) */
+@media (min-width: 861px) {
+    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu a {
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu a:hover,
+    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu a.activo {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.16);
+    }
+
+    /* "Ingresar" / "Salir": botón transparente con borde blanco */
+    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu .boton-claro {
+        background: transparent;
+        color: #ffffff;
+        box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.85);
+    }
+
+    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu .boton-claro:hover {
+        background: #ffffff;
+        color: var(--marca-oscura);
+    }
+
+    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu-usuario {
+        color: #ffffff;
+        border-left-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu-usuario small,
+    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu-usuario svg {
+        color: rgba(255, 255, 255, 0.75);
+    }
+}
+
+/* Sobre violeta el anillo de foco violeta no se ve: en la barra transparente es blanco */
+.js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) :focus-visible { outline-color: #ffffff; }
+
+/* El ícono "BA" es violeta: sobre el violeta se invierte para no desaparecer */
+.js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .logo-icono {
+    background: #ffffff;
+    color: var(--marca-oscura);
+}
+
+.logo-icono { transition: background 0.3s var(--ease), color 0.3s var(--ease); }
+
+/* Celular y tablet: mismos espaciados que antes, más el alto del header */
+@media (max-width: 860px) {
+    .js .contenido > .portada:first-child { padding-top: calc(56px + var(--alto-header)); }
+}
+
+@media (max-width: 520px) {
+    .js .contenido > .portada:first-child { padding-top: calc(40px + var(--alto-header)); }
+
+    .js .contenido > h1:first-child,
+    .js .contenido > .encabezado-seccion:first-child { padding-top: calc(32px + var(--alto-header)); }
+
+    .js .contenido > .formulario-centrado:first-child::before { height: calc(140px + var(--alto-header)); }
+}
