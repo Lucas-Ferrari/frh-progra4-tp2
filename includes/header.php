@@ -28,6 +28,17 @@ function claseActivo($archivo)
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="<?php echo RAIZ; ?>img/favicon.png">
+    <script>
+        // Va antes del CSS para que no haya un parpadeo de color: aplica el tema
+        // que la persona eligió con el botón. Si nunca eligió, manda el sistema.
+        try {
+            var temaGuardado = localStorage.getItem("tema");
+            if (temaGuardado === "oscuro" || temaGuardado === "claro") {
+                document.documentElement.dataset.tema = temaGuardado;
+            }
+        } catch (e) {}
+    </script>
     <?php
     // Cache busting: el ?v= cambia cada vez que se modifica el archivo
     // (filemtime = fecha de última modificación), así el navegador
@@ -66,7 +77,8 @@ function claseActivo($archivo)
                     <li><a href="<?php echo RAIZ; ?>contacto.php"<?php echo claseActivo("contacto.php"); ?>>Contacto</a></li>
                     <li><a href="<?php echo RAIZ; ?>cambiar_password.php"<?php echo claseActivo("cambiar_password.php"); ?>>Cambiar contraseña</a></li>
                     <li class="menu-usuario">
-                        <span title="<?php echo e(nombreRol(rolActual())); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg> <?php echo e($_SESSION["nombre"]); ?></span>
+                        <!-- Nombre y, debajo, el rol (visible, no solo en un title) -->
+                        <span class="usuario"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg> <span><?php echo e($_SESSION["nombre"]); ?><small><?php echo e(nombreRol(rolActual())); ?></small></span></span>
                         <a href="<?php echo RAIZ; ?>logout.php" class="boton boton-chico boton-claro">Salir</a>
                     </li>
                 <?php else: ?>
@@ -76,6 +88,13 @@ function claseActivo($archivo)
                 <?php endif; ?>
             </ul>
         </nav>
+
+        <!-- Cambio manual de tema. animaciones.js actualiza el aria-label
+             según el tema activo; los dos íconos se alternan por CSS. -->
+        <button type="button" class="boton-tema" aria-label="Cambiar a modo oscuro">
+            <svg class="luna-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+            <svg class="sol-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
     </div>
 </header>
 

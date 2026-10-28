@@ -37,9 +37,14 @@
     color-scheme: light dark;
 }
 
-/* ---------- Modo oscuro (según la preferencia del sistema) ---------- */
+/* ---------- Modo oscuro ----------
+   Se activa por la preferencia del sistema, salvo que la persona haya
+   elegido "claro" con el botón; o directamente si eligió "oscuro".
+   CSS no permite unir una media query y un selector de atributo en una
+   misma regla, por eso los valores aparecen dos veces: si se cambia un
+   color oscuro, hay que cambiarlo en los dos bloques. */
 @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-tema="claro"]) {
         --marca: #6b45f0;
         --marca-oscura: #5a2ee5;
         --marca-suave: #241d3d;
@@ -65,8 +70,40 @@
         --peligro: #d63d48;
         --peligro-hover: #b8232c;
         --placeholder: #8f8aa3;
+        color-scheme: dark;
     }
 }
+
+:root[data-tema="oscuro"] {
+        --marca: #6b45f0;
+        --marca-oscura: #5a2ee5;
+        --marca-suave: #241d3d;
+        --marca-texto: #b29cff;
+        --fondo: #0b0a10;
+        --superficie: #1a1824;
+        --superficie-2: #211f2d;
+        --texto: #f1f0f6;
+        --texto-suave: #a9a5ba;
+        --borde: #2d2a3a;
+        --exito-fondo: #12322a;
+        --exito-texto: #6fd6a6;
+        --error-fondo: #3a1a20;
+        --error-texto: #ff9ba3;
+        --info-fondo: #241d3d;
+        --info-texto: #b29cff;
+        --sombra: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+        --sombra-alta: 0 2px 4px rgba(0, 0, 0, 0.3), 0 18px 40px rgba(0, 0, 0, 0.4);
+        --fila-hover: #211f2d;
+        --fila-destacada: #241d3d;
+        --gris-fondo: #2a2736;
+        --titulos: #f6f5fa;
+        --peligro: #d63d48;
+        --peligro-hover: #b8232c;
+        --placeholder: #8f8aa3;
+    color-scheme: dark;
+}
+
+:root[data-tema="claro"] { color-scheme: light; }
 
 /* ---------- Base ---------- */
 *,
@@ -1263,13 +1300,22 @@ body { overflow-x: clip; }
    tokens del modo oscuro (que están más arriba en el archivo).
    ===================================================================== */
 @media (prefers-color-scheme: light) {
-    :root {
+    :root:not([data-tema="oscuro"]) {
         --fondo: #ece8f8;        /* lavanda suave: las tarjetas blancas se despegan por tono */
         --superficie-2: #f6f3fd; /* inputs, header y filas: un escalón entre fondo y blanco */
         --gris-fondo: #e2dcf5;
         --borde: #ddd6f0;
         --fila-hover: #f3effc;
     }
+}
+
+/* Si eligió "claro" con el botón, aunque el sistema esté en oscuro */
+:root[data-tema="claro"] {
+        --fondo: #ece8f8;        /* lavanda suave: las tarjetas blancas se despegan por tono */
+        --superficie-2: #f6f3fd; /* inputs, header y filas: un escalón entre fondo y blanco */
+        --gris-fondo: #e2dcf5;
+        --borde: #ddd6f0;
+        --fila-hover: #f3effc;
 }
 
 /* Header en el escalón intermedio, no en blanco puro */
@@ -1488,3 +1534,121 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
 /* Contador del mensaje, alineado a la derecha; en rojo cerca del límite */
 .campo .contador { text-align: right; font-variant-numeric: tabular-nums; }
 .campo .contador.cerca { color: var(--error-texto); }
+
+/* =====================================================================
+   Integración con develop (funcionalidades de Lucas, con este diseño)
+   Botón de tema, rol del usuario, sombra del header al bajar,
+   aviso del footer y tarjetas de cuentas del panel del cliente.
+   ===================================================================== */
+
+/* Header: logo a la izquierda; menú y botón de tema a la derecha */
+.menu { margin-left: auto; }
+
+.boton-tema {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--gris-fondo);
+    color: var(--titulos);
+    cursor: pointer;
+    transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.boton-tema:hover { background: var(--marca-suave); transform: rotate(-12deg); }
+.boton-tema svg { width: 18px; height: 18px; }
+
+/* Se muestra la luna en claro y el sol en oscuro (el ícono indica a qué se cambia) */
+.boton-tema .sol-icono { display: none; }
+:root[data-tema="oscuro"] .boton-tema .sol-icono { display: block; }
+:root[data-tema="oscuro"] .boton-tema .luna-icono { display: none; }
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-tema="claro"]) .boton-tema .sol-icono { display: block; }
+    :root:not([data-tema="claro"]) .boton-tema .luna-icono { display: none; }
+}
+
+/* Nombre del usuario con su rol debajo */
+.menu-usuario .usuario > span { display: flex; flex-direction: column; line-height: 1.2; }
+
+.menu-usuario small {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--texto-suave);
+}
+
+/* Sombra solo cuando el header queda flotando sobre el contenido
+   (animaciones.js agrega la clase al bajar): es algo que flota de verdad */
+.encabezado { transition: box-shadow 0.25s var(--ease); }
+.encabezado.con-sombra { box-shadow: 0 6px 20px rgba(21, 19, 31, 0.08); }
+
+/* Footer: el aviso de proyecto académico ocupa todo el ancho, abajo */
+.pie-aviso {
+    flex-basis: 100%;
+    margin: 8px 0 0;
+    font-size: 0.85rem;
+    color: #a9a5ba;
+}
+
+/* Panel del cliente: una tarjeta por cuenta */
+.cuentas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.cuenta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 24px;
+    border-radius: var(--radio);
+    background: var(--superficie);
+    transition: transform 0.35s var(--ease);
+}
+
+.cuenta:hover { transform: translateY(-3px); }
+
+.cuenta-tipo { font-weight: 700; color: var(--titulos); }
+
+.cuenta-numero {
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums; /* números alineados, sin fuente monoespaciada */
+}
+
+/* El saldo es lo más importante de la tarjeta: va grande */
+.cuenta .monto {
+    margin-top: 18px;
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--titulos);
+    font-variant-numeric: tabular-nums;
+}
+
+.cuenta-pie {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+    padding-top: 14px;
+    font-size: 0.875rem;
+    color: var(--texto-suave);
+}
+
+.cuenta-pie a { font-weight: 700; }
+
+/* Fecha y link entran en una línea cada uno, sin partirse */
+.cuenta-pie > * { white-space: nowrap; }
+
+@media (max-width: 860px) {
+    /* En celular: logo, botón de tema y hamburguesa en una fila */
+    .boton-tema { margin-left: auto; order: 1; }
+    .menu-boton { order: 2; }
+}
