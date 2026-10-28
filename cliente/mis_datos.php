@@ -47,7 +47,7 @@ require_once(__DIR__ . "/../includes/header.php");
     <form action="../procesos/procesar_mis_datos.php" method="POST" novalidate>
         <div class="campo">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" maxlength="100" required value="<?php echo e(valorAnterior("email", $usuario["email"])); ?>">
+            <input type="email" id="email" name="email" autocomplete="email" spellcheck="false" maxlength="100" required value="<?php echo e(valorAnterior("email", $usuario["email"])); ?>">
         </div>
         <div class="campo">
             <label for="password_actual">Contraseña actual (para confirmar el cambio)</label>

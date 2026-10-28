@@ -34,20 +34,30 @@ document.addEventListener("DOMContentLoaded", function () {
         var observador = new IntersectionObserver(function (entradas) {
             entradas.forEach(function (entrada) {
                 if (entrada.isIntersecting) {
-                    entrada.target.classList.add("visible");
-                    observador.unobserve(entrada.target);
+                    var bloque = entrada.target;
+                    bloque.classList.add("visible");
+                    observador.unobserve(bloque);
+                    // Terminada la entrada se quitan las clases: así el bloque y sus
+                    // partes recuperan sus propias transiciones (hover de botones y tarjetas)
+                    setTimeout(function () {
+                        bloque.classList.remove("revelar", "visible");
+                    }, 1600);
                 }
             });
         }, { rootMargin: "0px 0px -10% 0px" });
 
         var bloques = document.querySelectorAll(
-            ".contenido > *:not(.grilla):not(.menu-panel):not(.mensaje), .grilla > *, .menu-panel > *, .portada-visual > *"
+            ".contenido > *:not(.grilla):not(.menu-panel):not(.mensaje):not(.portada), .grilla > *, .menu-panel > *, .portada-visual > *"
         );
 
         bloques.forEach(function (bloque) {
             var enPantalla = bloque.getBoundingClientRect().top < window.innerHeight * 0.9;
             // La portada se anima siempre: es el primer momento de la página.
             if (enPantalla && !bloque.closest(".portada")) {
+                return;
+            }
+            // Si el bloque ya tiene su propia animación de entrada (CSS), no se lo anima dos veces
+            if (getComputedStyle(bloque).animationName !== "none") {
                 return;
             }
             var hermanos = bloque.parentElement.children;
@@ -102,6 +112,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!valido) {
                 evento.preventDefault();
+                // Lleva el foco al primer campo con error: el usuario no tiene que buscarlo
+                var primerError = form.querySelector('[aria-invalid="true"]');
+                if (primerError) {
+                    primerError.focus();
+                }
                 return;
             }
 
@@ -109,9 +124,116 @@ document.addEventListener("DOMContentLoaded", function () {
             var mensajeConfirmacion = form.getAttribute("data-confirmar");
             if (mensajeConfirmacion && !confirm(mensajeConfirmacion)) {
                 evento.preventDefault();
+                return;
+            }
+
+            // Envío confirmado: se bloquea el botón para evitar un doble envío.
+            // En una transferencia, un doble clic podría duplicar la operación.
+            // Solo en POST: los buscadores (GET) no modifican datos.
+            if (form.method.toLowerCase() === "post") {
+                var boton = form.querySelector('button[type="submit"]');
+                if (boton) {
+                    boton.setAttribute("data-texto-original", boton.textContent);
+                    boton.disabled = true;
+                    boton.textContent = "Procesando…";
+                }
             }
         });
     });
+
+    // Si el usuario vuelve con el botón "Atrás", el navegador puede restaurar
+    // la página desde caché con el botón todavía bloqueado: se lo reactiva.
+    window.addEventListener("pageshow", function (evento) {
+        if (!evento.persisted) {
+            return;
+        }
+        document.querySelectorAll("button[data-texto-original]").forEach(function (boton) {
+            boton.disabled = false;
+            boton.textContent = boton.getAttribute("data-texto-original");
+        });
+    });
+
+    // ---------- Ayuda en vivo mientras se escribe ----------
+    // No reemplaza la validación al enviar: solo muestra el avance
+    // para que el usuario no tenga que adivinar si cumple o no.
+
+    // Contraseña: la ayuda "Mínimo N caracteres" se pone en verde al cumplirse
+    document.querySelectorAll("[data-password-min]").forEach(function (campo) {
+        var ayuda = campo.parentNode.querySelector(".ayuda");
+        if (!ayuda) {
+            return;
+        }
+        var minimo = parseInt(campo.getAttribute("data-password-min"), 10);
+        // La ayuda pasa a describir el campo: el lector de pantalla la lee al enfocarlo
+        if (campo.id) {
+            ayuda.id = campo.id + "-ayuda";
+            agregarDescripcion(campo, ayuda.id);
+        }
+        campo.addEventListener("input", function () {
+            ayuda.classList.toggle("cumple", campo.value.length >= minimo);
+        });
+    });
+
+    // Repetir contraseña: avisa en cuanto las dos coinciden
+    document.querySelectorAll("[data-igual-a]").forEach(function (campo) {
+        var otro = document.getElementById(campo.getAttribute("data-igual-a"));
+        if (!otro) {
+            return;
+        }
+        var aviso = document.createElement("span");
+        aviso.className = "ayuda coincide";
+        aviso.setAttribute("aria-live", "polite"); // se anuncia cuando aparece el texto
+        campo.parentNode.appendChild(aviso);
+
+        function comparar() {
+            var coinciden = campo.value !== "" && campo.value === otro.value;
+            aviso.textContent = coinciden ? "Las contraseñas coinciden." : "";
+            aviso.classList.toggle("cumple", coinciden);
+        }
+        campo.addEventListener("input", comparar);
+        otro.addEventListener("input", comparar);
+    });
+
+    // Textos largos: contador de caracteres contra el maxlength del HTML
+    document.querySelectorAll("textarea[maxlength]").forEach(function (area) {
+        var maximo = parseInt(area.getAttribute("maxlength"), 10);
+        var contador = document.createElement("span");
+        contador.className = "ayuda contador";
+        area.parentNode.appendChild(contador);
+        if (area.id) {
+            contador.id = area.id + "-contador";
+            agregarDescripcion(area, contador.id);
+        }
+
+        function actualizar() {
+            contador.textContent = area.value.length + " / " + maximo + " caracteres";
+            // Aviso visual cuando falta poco para el límite
+            contador.classList.toggle("cerca", area.value.length > maximo * 0.9);
+        }
+        area.addEventListener("input", actualizar);
+        actualizar();
+    });
+
+    // aria-describedby admite varios ids separados por espacio:
+    // estas dos funciones agregan o quitan uno sin borrar los demás.
+    function agregarDescripcion(campo, id) {
+        var ids = (campo.getAttribute("aria-describedby") || "").split(" ").filter(Boolean);
+        if (ids.indexOf(id) === -1) {
+            ids.push(id);
+        }
+        campo.setAttribute("aria-describedby", ids.join(" "));
+    }
+
+    function quitarDescripcion(campo, id) {
+        var ids = (campo.getAttribute("aria-describedby") || "").split(" ").filter(function (otro) {
+            return otro && otro !== id;
+        });
+        if (ids.length) {
+            campo.setAttribute("aria-describedby", ids.join(" "));
+        } else {
+            campo.removeAttribute("aria-describedby");
+        }
+    }
 
     function mostrarError(campo, texto) {
         var contenedor = campo.closest(".campo") || campo.parentNode;
@@ -119,12 +241,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
         var error = document.createElement("span");
         error.className = "error-campo";
+        // aria-live: el lector de pantalla anuncia el error apenas aparece
+        error.setAttribute("aria-live", "polite");
         error.textContent = texto;
         contenedor.appendChild(error);
+
+        // Se vincula el error con su campo para que se lea al enfocarlo
+        campo.setAttribute("aria-invalid", "true");
+        if (campo.id) {
+            error.id = campo.id + "-error";
+            agregarDescripcion(campo, error.id);
+        }
     }
 
     function limpiarErrores(form) {
         form.querySelectorAll(".error-campo").forEach(function (el) { el.remove(); });
         form.querySelectorAll(".campo-error").forEach(function (el) { el.classList.remove("campo-error"); });
+        form.querySelectorAll('[aria-invalid="true"]').forEach(function (campo) {
+            campo.removeAttribute("aria-invalid");
+            quitarDescripcion(campo, campo.id + "-error");
+        });
     }
 });

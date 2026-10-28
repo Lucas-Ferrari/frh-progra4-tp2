@@ -21,14 +21,30 @@ function claseActivo($archivo)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Color de la barra del navegador en el celular, según el tema del sistema -->
+    <meta name="theme-color" content="#f5f5f8" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b0a10" media="(prefers-color-scheme: dark)">
     <title>Banco Andino - <?php echo e($titulo); ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?php echo RAIZ; ?>css/estilos.css">
-    <script src="<?php echo RAIZ; ?>js/validaciones.js" defer></script>
+    <?php
+    // Cache busting: el ?v= cambia cada vez que se modifica el archivo
+    // (filemtime = fecha de última modificación), así el navegador
+    // descarga la versión nueva en lugar de usar la que tiene en caché.
+    $versionCss = filemtime(__DIR__ . "/../css/estilos.css");
+    $versionJs = filemtime(__DIR__ . "/../js/validaciones.js");
+    $versionAnimaciones = filemtime(__DIR__ . "/../js/animaciones.js");
+    ?>
+    <link rel="stylesheet" href="<?php echo RAIZ; ?>css/estilos.css?v=<?php echo $versionCss; ?>">
+    <script src="<?php echo RAIZ; ?>js/validaciones.js?v=<?php echo $versionJs; ?>" defer></script>
+    <!-- Animaciones separadas de las validaciones: cada archivo, una responsabilidad -->
+    <script src="<?php echo RAIZ; ?>js/animaciones.js?v=<?php echo $versionAnimaciones; ?>" defer></script>
 </head>
 <body>
+
+<!-- Permite saltear el menú con teclado o lector de pantalla e ir directo al contenido -->
+<a href="#contenido" class="saltar">Saltar al contenido</a>
 
 <header class="encabezado">
     <div class="contenedor encabezado-interior">
@@ -63,5 +79,5 @@ function claseActivo($archivo)
     </div>
 </header>
 
-<main class="contenedor contenido">
+<main id="contenido" class="contenedor contenido" tabindex="-1">
 <?php mostrarMensajes(); ?>

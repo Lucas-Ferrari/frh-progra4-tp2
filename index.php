@@ -35,16 +35,51 @@ require_once(__DIR__ . "/includes/header.php");
             <div class="movimiento"><span>Transferencia recibida</span><span class="positivo">+ $ 18.000,00</span></div>
         </div>
     </div>
+
+    <!-- Cinta de productos en movimiento. aria-hidden: repite información que ya
+         está en "Nuestros productos", así el lector de pantalla no la lee dos veces.
+         El grupo va duplicado para que el desplazamiento sea un bucle sin cortes. -->
+    <div class="portada-cinta" aria-hidden="true">
+        <div class="cinta-pista">
+            <div class="cinta-grupo">
+                <span>Caja de ahorro en pesos y dólares</span>
+                <span>Cuenta corriente</span>
+                <span>Tarjeta de débito incluida</span>
+                <span>Transferencias las 24 h</span>
+                <span>Sin costo de mantenimiento</span>
+                <span>Cuotas sin interés en comercios adheridos</span>
+            </div>
+            <div class="cinta-grupo">
+                <span>Caja de ahorro en pesos y dólares</span>
+                <span>Cuenta corriente</span>
+                <span>Tarjeta de débito incluida</span>
+                <span>Transferencias las 24 h</span>
+                <span>Sin costo de mantenimiento</span>
+                <span>Cuotas sin interés en comercios adheridos</span>
+            </div>
+        </div>
+    </div>
+    <!-- hidden: sin JS el botón no haría nada, así que portada.js lo muestra -->
+    <button type="button" class="cinta-pausa" aria-pressed="false" hidden>Pausar</button>
 </section>
 
-<section class="tarjeta">
-    <h2>Quiénes somos</h2>
-    <p>
-        Banco Andino nació en 2010 con una idea simple: que manejar tu dinero sea fácil,
-        transparente y sin costos ocultos. Hoy acompañamos a miles de personas y
-        pequeñas empresas con atención personalizada en nuestra sucursal y una plataforma
-        online disponible todo el día.
-    </p>
+<!-- Texto a la izquierda e ilustración a la derecha: la sección usa todo el ancho -->
+<section class="tarjeta quienes">
+    <div>
+        <h2>Quiénes somos</h2>
+        <p>
+            Banco Andino nació en 2010 con una idea simple: que manejar tu dinero sea fácil,
+            transparente y sin costos ocultos. Hoy acompañamos a miles de personas y
+            pequeñas empresas con atención personalizada en nuestra sucursal y una plataforma
+            online disponible todo el día.
+        </p>
+    </div>
+    <figure class="quienes-imagen">
+        <!-- width/height: el navegador reserva el espacio antes de cargarla (evita saltos de diseño) -->
+        <img src="img/corrientes.svg" width="800" height="560" loading="lazy"
+             alt="Ilustración de la Avenida Corrientes de noche, con el Obelisco al fondo y la sucursal de Banco Andino en la esquina">
+        <figcaption>Nuestra casa central, en Av. Corrientes 1234.</figcaption>
+    </figure>
 </section>
 
 <h2 class="seccion-titulo">Nuestros productos</h2>
@@ -87,5 +122,9 @@ require_once(__DIR__ . "/includes/header.php");
     </div>
     <a href="contacto.php" class="boton">Ir al formulario de contacto</a>
 </section>
+
+<!-- Animación de la portada: solo la usa esta página, por eso se carga acá
+     y no en el header de todo el sitio. ?v= evita que quede en caché. -->
+<script src="js/portada.js?v=<?php echo filemtime(__DIR__ . "/js/portada.js"); ?>" defer></script>
 
 <?php require_once(__DIR__ . "/includes/footer.php"); ?>

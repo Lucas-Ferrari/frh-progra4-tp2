@@ -39,7 +39,7 @@ require_once(__DIR__ . "/../includes/header.php");
 
             <div class="campo">
                 <label for="numero_destino">Número de cuenta destino</label>
-                <input type="text" id="numero_destino" name="numero_destino" inputmode="numeric" maxlength="20" required list="mis-cuentas" value="<?php echo e(valorAnterior("numero_destino")); ?>">
+                <input type="text" id="numero_destino" name="numero_destino" autocomplete="off" inputmode="numeric" maxlength="20" required list="mis-cuentas" value="<?php echo e(valorAnterior("numero_destino")); ?>">
                 <datalist id="mis-cuentas">
                     <?php foreach ($cuentas as $cuenta): ?>
                         <option value="<?php echo e($cuenta["numero_cuenta"]); ?>"><?php echo e($cuenta["tipo"] . " " . $cuenta["moneda"]); ?></option>
@@ -50,12 +50,12 @@ require_once(__DIR__ . "/../includes/header.php");
 
             <div class="campo">
                 <label for="monto">Monto</label>
-                <input type="number" id="monto" name="monto" min="0.01" step="0.01" required data-monto value="<?php echo e(valorAnterior("monto")); ?>">
+                <input type="number" id="monto" name="monto" inputmode="decimal" autocomplete="off" min="0.01" step="0.01" required data-monto value="<?php echo e(valorAnterior("monto")); ?>">
             </div>
 
             <div class="campo">
                 <label for="descripcion">Concepto (opcional)</label>
-                <input type="text" id="descripcion" name="descripcion" maxlength="100" value="<?php echo e(valorAnterior("descripcion")); ?>">
+                <input type="text" id="descripcion" name="descripcion" autocomplete="off" maxlength="100" value="<?php echo e(valorAnterior("descripcion")); ?>">
             </div>
 
             <div class="acciones">
