@@ -189,6 +189,9 @@ function mostrarMensajes()
         "auto_rol" => "No podés quitarte el rol de administrador a vos mismo.",
         "rol" => "Rol inválido.",
         "no_encontrado" => "El registro solicitado no existe.",
+        "codigo" => "El código ingresado no es correcto.",
+        "codigo_vencido" => "El código venció o no hay un pedido en curso. Pedí uno nuevo.",
+        "codigo_intentos" => "Demasiados intentos fallidos. Pedí un código nuevo.",
         "db" => "Ocurrió un error al guardar los datos. Intentá nuevamente.",
     ];
 
@@ -196,6 +199,7 @@ function mostrarMensajes()
         "registro" => "¡Registro exitoso! Ya podés ingresar con tu email y contraseña.",
         "logout" => "Cerraste sesión correctamente.",
         "password" => "Contraseña actualizada correctamente.",
+        "password_recuperada" => "Listo, ya podés ingresar con tu contraseña nueva.",
         "contacto" => "¡Gracias! Recibimos tu consulta y te responderemos a la brevedad.",
         "contacto_sin_mail" => "Recibimos tu consulta y quedó registrada. (El aviso por mail no pudo enviarse desde este servidor.)",
         "datos" => "Tus datos se actualizaron correctamente.",
