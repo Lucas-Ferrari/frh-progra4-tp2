@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     animarTransferencia(visual);
-    controlarCinta(document.querySelector(".portada-cinta"), document.querySelector(".cinta-pausa"));
+    controlarCinta(document.querySelector(".portada-cinta"));
 
     // En pantallas táctiles no hay puntero que seguir
     if (window.matchMedia("(pointer: fine)").matches) {
@@ -79,18 +79,18 @@ function contar(desde, hasta, duracion, mostrar) {
     requestAnimationFrame(paso);
 }
 
-// ---------- Cinta de productos: botón para pausarla ----------
-// Todo lo que se mueve solo por más de 5 segundos necesita poder
-// detenerse (WCAG 2.2.2): hay gente a la que el movimiento le impide leer.
-function controlarCinta(cinta, boton) {
-    if (!cinta || !boton) {
+// ---------- Cinta de productos: más lenta con el mouse encima ----------
+// playbackRate cambia la velocidad sin saltos (cambiar animation-duration la haría saltar)
+function controlarCinta(cinta) {
+    var pista = cinta && cinta.querySelector(".cinta-pista");
+    if (!pista || !pista.getAnimations) {
         return;
     }
-    boton.hidden = false;
-    boton.addEventListener("click", function () {
-        var pausada = cinta.classList.toggle("pausada");
-        boton.setAttribute("aria-pressed", pausada ? "true" : "false");
-        boton.textContent = pausada ? "Reanudar" : "Pausar";
+    cinta.addEventListener("mouseenter", function () {
+        pista.getAnimations().forEach(function (a) { a.playbackRate = 0.3; });
+    });
+    cinta.addEventListener("mouseleave", function () {
+        pista.getAnimations().forEach(function (a) { a.playbackRate = 1; });
     });
 }
 

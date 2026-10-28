@@ -430,6 +430,41 @@ code {
 
 .grilla .tarjeta { margin-bottom: 0; }
 
+/* ---------- Sobre nosotros ---------- */
+.integrante { text-align: center; }
+.integrante h2 { font-size: 1.15rem; margin-bottom: 4px; }
+.integrante-rol { color: var(--marca-texto); font-weight: 600; }
+
+.integrante-avatar,
+.esqueleto-avatar {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+}
+
+.integrante-avatar {
+    display: grid;
+    place-items: center;
+    background: var(--marca-suave);
+    color: var(--marca-texto);
+    font-size: 1.75rem;
+    font-weight: 800;
+}
+
+/* Esqueleto de carga mientras no hay datos del equipo */
+.esqueleto { background: var(--gris-fondo); border-radius: var(--radio-chico); }
+.esqueleto-avatar { border-radius: 50%; }
+.esqueleto-linea { height: 12px; margin: 0 auto 10px; }
+
+@media (prefers-reduced-motion: no-preference) {
+    .esqueleto { animation: esqueleto-latir 1.6s ease-in-out infinite; }
+}
+
+@keyframes esqueleto-latir {
+    50% { opacity: 0.5; }
+}
+
 .estadistica .valor {
     display: block;
     font-size: 1.75rem;
@@ -1160,35 +1195,8 @@ body { overflow-x: clip; }
     .cinta-pista { animation: cinta-avanzar 40s linear infinite; }
 }
 
-/* Se detiene con el mouse encima o con el botón Pausar */
-.portada-cinta:hover .cinta-pista,
-.portada-cinta.pausada .cinta-pista { animation-play-state: paused; }
-
 @keyframes cinta-avanzar {
     to { transform: translateX(-50%); }
-}
-
-.cinta-pausa {
-    position: absolute;
-    right: 0;
-    bottom: 88px; /* arriba de la cinta, sobre el violeta: no tapa el texto que pasa */
-    z-index: 1;
-    padding: 7px 14px;
-    border: 0;
-    border-radius: 99px;
-    background: var(--tinta-profunda);
-    color: #ffffff;
-    font: inherit;
-    font-size: 0.8rem;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.cinta-pausa:hover { background: #2a2736; }
-
-/* Si el usuario pidió menos movimiento la cinta está quieta: el botón sobra */
-@media (prefers-reduced-motion: reduce) {
-    .cinta-pausa { display: none; }
 }
 
 @media (max-width: 860px) {
@@ -1199,7 +1207,6 @@ body { overflow-x: clip; }
     .portada { padding: 40px 0 120px; }
     .cinta-grupo { font-size: 1rem; padding: 16px 32px 16px 0; gap: 32px; }
     .cinta-grupo span { gap: 32px; }
-    .cinta-pausa { bottom: 70px; }
 }
 
 /* =====================================================================
@@ -1589,6 +1596,7 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
 .pie-aviso {
     flex-basis: 100%;
     margin: 8px 0 0;
+    text-align: center;
     font-size: 0.85rem;
     color: #a9a5ba;
 }

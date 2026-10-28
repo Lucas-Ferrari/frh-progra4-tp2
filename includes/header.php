@@ -77,6 +77,7 @@ function claseActivo($archivo)
 
                 <?php if (estaLogueado()): ?>
                     <li><a href="<?php echo RAIZ . panelSegunRol(rolActual()); ?>"<?php echo claseActivo("panel.php"); ?>>Mi panel</a></li>
+                    <li><a href="<?php echo RAIZ; ?>nosotros.php"<?php echo claseActivo("nosotros.php"); ?>>Nosotros</a></li>
                     <li><a href="<?php echo RAIZ; ?>contacto.php"<?php echo claseActivo("contacto.php"); ?>>Contacto</a></li>
                     <li><a href="<?php echo RAIZ; ?>cambiar_password.php"<?php echo claseActivo("cambiar_password.php"); ?>>Cambiar contraseña</a></li>
                     <li class="menu-usuario">
@@ -85,6 +86,7 @@ function claseActivo($archivo)
                         <a href="<?php echo RAIZ; ?>logout.php" class="boton boton-chico boton-claro">Salir</a>
                     </li>
                 <?php else: ?>
+                    <li><a href="<?php echo RAIZ; ?>nosotros.php"<?php echo claseActivo("nosotros.php"); ?>>Nosotros</a></li>
                     <li><a href="<?php echo RAIZ; ?>contacto.php"<?php echo claseActivo("contacto.php"); ?>>Contacto</a></li>
                     <li><a href="<?php echo RAIZ; ?>registro.php"<?php echo claseActivo("registro.php"); ?>>Registrarse</a></li>
                     <li><a href="<?php echo RAIZ; ?>login.php" class="boton boton-chico boton-claro">Ingresar</a></li>

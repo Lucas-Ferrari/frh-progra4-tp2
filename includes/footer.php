@@ -9,6 +9,7 @@
             Sucursal: lunes a viernes de 10 a 15 h
         </div>
         <div class="pie-links">
+            <a href="<?php echo RAIZ; ?>nosotros.php">Sobre nosotros</a>
             <a href="<?php echo RAIZ; ?>contacto.php">Contacto</a>
             <a href="<?php echo RAIZ; ?>registro.php">Abrir una cuenta</a>
         </div>

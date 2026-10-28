@@ -60,7 +60,6 @@ require_once(__DIR__ . "/includes/header.php");
         </div>
     </div>
     <!-- hidden: sin JS el botón no haría nada, así que portada.js lo muestra -->
-    <button type="button" class="cinta-pausa" aria-pressed="false" hidden>Pausar</button>
 </section>
 
 <!-- Texto a la izquierda e ilustración a la derecha: la sección usa todo el ancho -->
