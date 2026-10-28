@@ -47,6 +47,7 @@ require_once(__DIR__ . "/includes/header.php");
         <div class="campo">
             <label for="password">Contraseña</label>
             <input type="password" id="password" name="password" required autocomplete="current-password">
+            <a href="recuperar_password.php" class="ayuda">¿Olvidaste tu contraseña?</a>
         </div>
 
         <button type="submit" class="boton">Ingresar</button>
