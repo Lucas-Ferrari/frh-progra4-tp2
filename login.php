@@ -24,8 +24,9 @@ require_once(__DIR__ . "/includes/header.php");
 
     <form action="procesos/validar_login.php" method="POST" novalidate>
 
-        <div class="campo">
-            <label>Tipo de acceso</label>
+        <!-- fieldset + legend: agrupa los radios y los anuncia juntos en lectores de pantalla -->
+        <fieldset class="campo">
+            <legend>Tipo de acceso</legend>
             <div class="opciones-radio">
                 <label>
                     <input type="radio" name="tipo_acceso" value="cliente" <?php echo $tipoAcceso === "cliente" ? "checked" : ""; ?>>
@@ -36,7 +37,7 @@ require_once(__DIR__ . "/includes/header.php");
                     Empleados
                 </label>
             </div>
-        </div>
+        </fieldset>
 
         <div class="campo">
             <label for="email">Email</label>

@@ -21,11 +21,11 @@ require_once(__DIR__ . "/includes/header.php");
         <div class="fila-campos">
             <div class="campo">
                 <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" name="nombre" maxlength="50" required value="<?php echo e(valorAnterior("nombre")); ?>">
+                <input type="text" id="nombre" name="nombre" autocomplete="given-name" maxlength="50" required value="<?php echo e(valorAnterior("nombre")); ?>">
             </div>
             <div class="campo">
                 <label for="apellido">Apellido</label>
-                <input type="text" id="apellido" name="apellido" maxlength="50" required value="<?php echo e(valorAnterior("apellido")); ?>">
+                <input type="text" id="apellido" name="apellido" autocomplete="family-name" maxlength="50" required value="<?php echo e(valorAnterior("apellido")); ?>">
             </div>
         </div>
 
@@ -43,18 +43,18 @@ require_once(__DIR__ . "/includes/header.php");
 
         <div class="campo">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" maxlength="100" required value="<?php echo e(valorAnterior("email")); ?>">
+            <input type="email" id="email" name="email" autocomplete="email" spellcheck="false" maxlength="100" required value="<?php echo e(valorAnterior("email")); ?>">
         </div>
 
         <div class="fila-campos">
             <div class="campo">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" required data-password-min="<?php echo PASSWORD_LONGITUD_MINIMA; ?>">
+                <input type="password" id="password" name="password" autocomplete="new-password" required data-password-min="<?php echo PASSWORD_LONGITUD_MINIMA; ?>">
                 <span class="ayuda">Mínimo <?php echo PASSWORD_LONGITUD_MINIMA; ?> caracteres.</span>
             </div>
             <div class="campo">
                 <label for="password_repetir">Repetir contraseña</label>
-                <input type="password" id="password_repetir" name="password_repetir" required data-igual-a="password">
+                <input type="password" id="password_repetir" name="password_repetir" autocomplete="new-password" required data-igual-a="password">
             </div>
         </div>
 

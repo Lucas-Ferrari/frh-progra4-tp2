@@ -21,26 +21,49 @@ function claseActivo($archivo)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Color de la barra del navegador en el celular, según el tema del sistema -->
+    <meta name="theme-color" content="#f5f5f8" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b0a10" media="(prefers-color-scheme: dark)">
     <title>Banco Andino - <?php echo e($titulo); ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="<?php echo RAIZ; ?>img/favicon.png">
-    <link rel="stylesheet" href="<?php echo RAIZ; ?>css/estilos.css">
     <script>
-        // Antes de pintar: tema elegido y marca de que hay JavaScript (para las animaciones).
-        document.documentElement.classList.add("js-anim");
-        try { if (localStorage.getItem("tema") === "oscuro") document.documentElement.dataset.tema = "oscuro"; } catch (e) {}
+        // Va antes del CSS para que no haya un parpadeo de color: aplica el tema
+        // que la persona eligió con el botón. Si nunca eligió, manda el sistema.
+        // La clase "js" habilita la barra transparente: sin JS la barra nunca
+        // pasaría a sólida al bajar, así que en ese caso queda sólida siempre.
+        document.documentElement.classList.add("js");
+        try {
+            var temaGuardado = localStorage.getItem("tema");
+            if (temaGuardado === "oscuro" || temaGuardado === "claro") {
+                document.documentElement.dataset.tema = temaGuardado;
+            }
+        } catch (e) {}
     </script>
-    <script src="<?php echo RAIZ; ?>js/validaciones.js" defer></script>
-    <script src="<?php echo RAIZ; ?>js/animaciones.js" defer></script>
+    <?php
+    // Cache busting: el ?v= cambia cada vez que se modifica el archivo
+    // (filemtime = fecha de última modificación), así el navegador
+    // descarga la versión nueva en lugar de usar la que tiene en caché.
+    $versionCss = filemtime(__DIR__ . "/../css/estilos.css");
+    $versionJs = filemtime(__DIR__ . "/../js/validaciones.js");
+    $versionAnimaciones = filemtime(__DIR__ . "/../js/animaciones.js");
+    ?>
+    <link rel="stylesheet" href="<?php echo RAIZ; ?>css/estilos.css?v=<?php echo $versionCss; ?>">
+    <script src="<?php echo RAIZ; ?>js/validaciones.js?v=<?php echo $versionJs; ?>" defer></script>
+    <!-- Animaciones separadas de las validaciones: cada archivo, una responsabilidad -->
+    <script src="<?php echo RAIZ; ?>js/animaciones.js?v=<?php echo $versionAnimaciones; ?>" defer></script>
 </head>
 <body>
+
+<!-- Permite saltear el menú con teclado o lector de pantalla e ir directo al contenido -->
+<a href="#contenido" class="saltar">Saltar al contenido</a>
 
 <header class="encabezado">
     <div class="contenedor encabezado-interior">
         <a href="<?php echo RAIZ; ?>index.php" class="logo">
-            <img src="<?php echo RAIZ; ?>img/logo.png" alt="" width="46" height="46">
+            <span class="logo-icono" aria-hidden="true">BA</span>
             <span class="logo-texto">Banco Andino</span>
         </a>
 
@@ -57,7 +80,8 @@ function claseActivo($archivo)
                     <li><a href="<?php echo RAIZ; ?>contacto.php"<?php echo claseActivo("contacto.php"); ?>>Contacto</a></li>
                     <li><a href="<?php echo RAIZ; ?>cambiar_password.php"<?php echo claseActivo("cambiar_password.php"); ?>>Cambiar contraseña</a></li>
                     <li class="menu-usuario">
-                        <span><?php echo e($_SESSION["nombre"]); ?><small><?php echo e(nombreRol(rolActual())); ?></small></span>
+                        <!-- Nombre y, debajo, el rol (visible, no solo en un title) -->
+                        <span class="usuario"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg> <span><?php echo e($_SESSION["nombre"]); ?><small><?php echo e(nombreRol(rolActual())); ?></small></span></span>
                         <a href="<?php echo RAIZ; ?>logout.php" class="boton boton-chico boton-claro">Salir</a>
                     </li>
                 <?php else: ?>
@@ -68,12 +92,14 @@ function claseActivo($archivo)
             </ul>
         </nav>
 
+        <!-- Cambio manual de tema. animaciones.js actualiza el aria-label
+             según el tema activo; los dos íconos se alternan por CSS. -->
         <button type="button" class="boton-tema" aria-label="Cambiar a modo oscuro">
-            <svg class="luna-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
-            <svg class="sol-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="luna-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+            <svg class="sol-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         </button>
     </div>
 </header>
 
-<main class="contenedor contenido">
+<main id="contenido" class="contenedor contenido" tabindex="-1">
 <?php mostrarMensajes(); ?>

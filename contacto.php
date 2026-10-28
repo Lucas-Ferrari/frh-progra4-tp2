@@ -32,10 +32,10 @@ require_once(__DIR__ . "/includes/header.php");
         </div>
         <p><a href="https://www.google.com/maps/search/?api=1&amp;query=Av.%20Corrientes%201234%2C%20CABA" target="_blank" rel="noopener">Ver en Google Maps ↗</a></p>
         <ul class="datos-contacto">
-            <li>📍 <strong>Casa central:</strong> Av. Corrientes 1234, C1043 CABA</li>
-            <li>📞 <strong>Teléfono:</strong> 0800-555-2264</li>
-            <li>✉️ <strong>Email:</strong> contacto@banco.local</li>
-            <li>🕙 <strong>Horario de atención:</strong> lunes a viernes de 10 a 15 h</li>
+            <li><span aria-hidden="true">📍</span> <strong>Casa central:</strong> Av. Corrientes 1234, C1043 CABA</li>
+            <li><span aria-hidden="true">📞</span> <strong>Teléfono:</strong> 0800-555-2264</li>
+            <li><span aria-hidden="true">✉️</span> <strong>Email:</strong> contacto@banco.local</li>
+            <li><span aria-hidden="true">🕙</span> <strong>Horario de atención:</strong> lunes a viernes de 10 a 15 h</li>
         </ul>
     </section>
 
@@ -44,11 +44,11 @@ require_once(__DIR__ . "/includes/header.php");
         <form action="procesos/procesar_contacto.php" method="POST" novalidate>
             <div class="campo">
                 <label for="nombre">Nombre y apellido</label>
-                <input type="text" id="nombre" name="nombre" maxlength="100" required value="<?php echo e(valorAnterior("nombre", $nombrePorDefecto)); ?>">
+                <input type="text" id="nombre" name="nombre" autocomplete="name" maxlength="100" required value="<?php echo e(valorAnterior("nombre", $nombrePorDefecto)); ?>">
             </div>
             <div class="campo">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" maxlength="100" required value="<?php echo e(valorAnterior("email", $emailPorDefecto)); ?>">
+                <input type="email" id="email" name="email" autocomplete="email" spellcheck="false" maxlength="100" required value="<?php echo e(valorAnterior("email", $emailPorDefecto)); ?>">
             </div>
             <div class="campo">
                 <label for="asunto">Asunto</label>
