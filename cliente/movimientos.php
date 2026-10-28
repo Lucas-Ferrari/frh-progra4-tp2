@@ -51,7 +51,7 @@ require_once(__DIR__ . "/../includes/header.php");
         <input type="hidden" name="id_cuenta" value="<?php echo (int) $idCuenta; ?>">
         <div class="campo">
             <label for="texto">Descripción</label>
-            <input type="search" id="texto" name="texto" placeholder="Ej.: sueldo" value="<?php echo e($texto); ?>">
+            <input type="search" id="texto" name="texto" placeholder="Ej.: sueldo…" value="<?php echo e($texto); ?>">
         </div>
         <div class="campo">
             <label for="desde">Desde</label>

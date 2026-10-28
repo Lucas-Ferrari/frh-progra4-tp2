@@ -39,7 +39,11 @@ El sitio está publicado en **<https://web-production-c0fbf.up.railway.app>** (p
   (en el servicio `web` apuntan al servicio `MySQL` con referencias `${{MySQL.MYSQLHOST}}`, etc.). Si no existen, usa los valores de XAMPP.
 - `.railwayignore` evita subir `sql/` y los `.md`, para que no se puedan descargar desde el sitio.
 - Para redesplegar después de un cambio: `railway up --service web`.
-- `mail()` no envía correos en Railway (no hay servidor SMTP): las consultas se guardan igual en la base.
+- `mail()` entrega los correos a un servicio **Mailpit** del mismo proyecto, que los atrapa sin enviarlos de verdad.
+  Se ven en <https://mailpit-production-c705.up.railway.app> (usuario y clave en la variable `MP_UI_AUTH` del servicio `mailpit`).
+  Cómo funciona: la variable `PHP_INI_SCAN_DIR=:/app/php` hace que PHP cargue `php/mail.ini`, que define
+  `sendmail_path` con `php/sendmail.php`; ese script manda el mail por SMTP a `SMTP_HOST:SMTP_PORT`
+  (`mailpit.railway.internal:1025`, por la red privada de Railway). En XAMPP no se carga nada de esto.
 
 ---
 

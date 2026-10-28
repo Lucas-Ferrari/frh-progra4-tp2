@@ -67,7 +67,7 @@ require_once(__DIR__ . "/../includes/header.php");
     <form method="GET" class="filtros">
         <div class="campo">
             <label for="q">Buscar</label>
-            <input type="search" id="q" name="q" placeholder="Apellido, nombre, DNI o email" value="<?php echo e($busqueda); ?>">
+            <input type="search" id="q" name="q" placeholder="Apellido, nombre, DNI o email…" value="<?php echo e($busqueda); ?>">
         </div>
         <?php if ($esAdmin): ?>
             <div class="campo">

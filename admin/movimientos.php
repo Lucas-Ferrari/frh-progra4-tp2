@@ -144,7 +144,7 @@ require_once(__DIR__ . "/../includes/header.php");
                 </div>
                 <div class="campo">
                     <label for="descripcion">Descripción</label>
-                    <input type="text" id="descripcion" name="descripcion" maxlength="150" placeholder="Ej.: Depósito por ventanilla" value="<?php echo e(valorAnterior("descripcion")); ?>">
+                    <input type="text" id="descripcion" name="descripcion" maxlength="150" placeholder="Ej.: Depósito por ventanilla…" value="<?php echo e(valorAnterior("descripcion")); ?>">
                 </div>
                 <div class="acciones">
                     <button type="submit" class="boton">Registrar</button>
