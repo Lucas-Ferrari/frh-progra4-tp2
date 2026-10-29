@@ -78,6 +78,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 bloque.style.setProperty("--retraso", (indice * 0.09) + "s");
             }
             bloque.classList.add("revelar");
+            if (bloque.closest(".portada")) {
+                // En el hero entra al cargar, no al scrollear: las tarjetas están al fondo de la
+                // pantalla y nunca llegarían al punto de disparo del observador
+                setTimeout(function () { bloque.classList.add("visible"); }, 50);
+                setTimeout(function () { bloque.classList.remove("revelar", "visible"); }, 1650);
+                return;
+            }
             observador.observe(bloque);
         });
     }

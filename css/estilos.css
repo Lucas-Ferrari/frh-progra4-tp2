@@ -1010,7 +1010,10 @@ body { overflow-x: clip; }
     position: absolute;
     inset: 0 calc(50% - 50vw);
     z-index: -1;
-    background: linear-gradient(135deg, #6f2cf4 0%, #4717b8 100%);
+    /* Foto a todo el ancho: el lado izquierdo es oscuro y deja lugar al texto.
+       El degradé queda de respaldo mientras carga la imagen */
+    background: url("../img/heroImage.jpg") 75% center / cover no-repeat,
+        linear-gradient(135deg, #6f2cf4 0%, #4717b8 100%);
 }
 
 /* La tarjeta de muestra pasa a tinta oscura plana: sobre el campo violeta,
@@ -1707,7 +1710,7 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
        svh: en celular no salta cuando se esconde la barra del navegador */
     min-height: 100vh;
     min-height: 100svh;
-    align-content: center;
+    align-content: stretch;   /* la fila ocupa todo el alto: el texto se centra y las tarjetas bajan al fondo */
 }
 
 .js .contenido > h1:first-child,
@@ -1796,4 +1799,32 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
     .js .contenido > .encabezado-seccion:first-child { padding-top: calc(32px + var(--alto-header)); }
 
     .js .contenido > .formulario-centrado:first-child::before { height: calc(140px + var(--alto-header)); }
+}
+
+/* ---------- Tarjetas sobre la foto del hero ----------
+   Bajan al fondo del hero, sobre el saco: la cara de la foto queda libre */
+.portada-visual {
+    align-self: end;
+    justify-self: end;
+    max-width: 260px;
+}
+
+.portada-visual .muestra-saldo { width: calc(100% + 24px); padding: 16px 18px; }
+.portada-visual .valor { font-size: 1.5rem; white-space: nowrap; }
+.portada-visual .movimiento { font-size: 0.8rem; white-space: nowrap; }
+.portada-visual .numero { white-space: nowrap; font-size: 0.85rem; }
+
+/* En celular el texto cae sobre la cara: un velo oscuro arriba lo vuelve legible */
+@media (max-width: 860px) {
+    .portada::before {
+        background: linear-gradient(to bottom, rgba(13, 8, 38, 0.85) 0%, rgba(13, 8, 38, 0.55) 45%, transparent 75%),
+            url("../img/heroImage.jpg") 72% center / cover no-repeat,
+            linear-gradient(135deg, #6f2cf4 0%, #4717b8 100%);
+    }
+}
+
+/* Pantallas anchas pero bajas: la cara de la foto queda más abajo, las tarjetas se achican más */
+@media (min-width: 861px) and (max-height: 860px) {
+    .portada-visual { max-width: 210px; }
+    .portada-visual .valor { font-size: 1.25rem; }
 }
