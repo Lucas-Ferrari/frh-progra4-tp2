@@ -20,7 +20,7 @@ require_once(__DIR__ . "/../includes/header.php");
 
 <section class="tarjeta formulario formulario-centrado">
     <h1>Transferir</h1>
-    <p class="texto-suave">Transferí entre tus cuentas o a cualquier cuenta de Banco Andino en la misma moneda.</p>
+    <p class="texto-suave">Transferí entre tus cuentas o a cualquier cuenta de Future Bank en la misma moneda.</p>
 
     <?php if (count($cuentas) === 0): ?>
         <p>No tenés cuentas activas desde las cuales transferir.</p>

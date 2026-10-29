@@ -10,13 +10,18 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
+    var carrusel = document.querySelector(".carrusel");
+    if (carrusel) {
+        iniciarCarrusel(carrusel);
+        iniciarModalPromo(document.querySelector(".promo-modal"));
+    }
+
     var visual = document.querySelector(".portada-visual");
     if (!visual || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         return;
     }
 
     animarTransferencia(visual);
-    controlarCinta(document.querySelector(".portada-cinta"));
 
     // En pantallas táctiles no hay puntero que seguir
     if (window.matchMedia("(pointer: fine)").matches) {
@@ -79,18 +84,78 @@ function contar(desde, hasta, duracion, mostrar) {
     requestAnimationFrame(paso);
 }
 
-// ---------- Cinta de productos: más lenta con el mouse encima ----------
-// playbackRate cambia la velocidad sin saltos (cambiar animation-duration la haría saltar)
-function controlarCinta(cinta) {
-    var pista = cinta && cinta.querySelector(".cinta-pista");
-    if (!pista || !pista.getAnimations) {
+// ---------- Carrusel de descuentos: infinito y automático ----------
+// La lista está dos veces: al pasar la mitad se salta atrás exactamente esa mitad,
+// y como las dos mitades son iguales el salto no se ve.
+function iniciarCarrusel(carrusel) {
+    var mitad = function () { return carrusel.scrollWidth / 2; };
+    var pausado = false;
+    var reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function acomodar() {
+        if (carrusel.scrollLeft >= mitad()) { carrusel.scrollLeft -= mitad(); }
+        if (carrusel.scrollLeft <= 0) { carrusel.scrollLeft += mitad(); }
+    }
+
+    // Se detiene con el mouse encima o con el foco adentro (teclado)
+    carrusel.addEventListener("mouseenter", function () { pausado = true; });
+    carrusel.addEventListener("mouseleave", function () { pausado = false; });
+    carrusel.addEventListener("focusin", function () { pausado = true; });
+    carrusel.addEventListener("focusout", function () { pausado = false; });
+    carrusel.addEventListener("scroll", acomodar);
+
+    // Flechas: una tarjeta por clic
+    document.querySelectorAll("[data-carrusel]").forEach(function (flecha) {
+        flecha.addEventListener("click", function () {
+            var paso = carrusel.querySelector("li").offsetWidth + 16; // tarjeta + gap
+            carrusel.scrollBy({ left: paso * Number(flecha.dataset.carrusel), behavior: reducido ? "auto" : "smooth" });
+        });
+    });
+
+    // Con "reducir movimiento" no avanza solo: queda el scroll manual y las flechas
+    if (reducido) {
         return;
     }
-    cinta.addEventListener("mouseenter", function () {
-        pista.getAnimations().forEach(function (a) { a.playbackRate = 0.3; });
+    // La posición se acumula aparte: sumarle fracciones de píxel a scrollLeft se pierden al redondear
+    var anterior = null;
+    var posicion = carrusel.scrollLeft;
+    function avanzar(ahora) {
+        if (anterior !== null && !pausado && !document.hidden) {
+            if (Math.abs(carrusel.scrollLeft - posicion) > 2) {
+                posicion = carrusel.scrollLeft; // lo movió el usuario (flechas, dedo, rueda)
+            }
+            posicion += (ahora - anterior) * 0.04; // ~40 px por segundo
+            if (posicion >= mitad()) { posicion -= mitad(); }
+            carrusel.scrollLeft = posicion;
+        }
+        anterior = ahora;
+        requestAnimationFrame(avanzar);
+    }
+    requestAnimationFrame(avanzar);
+}
+
+// ---------- Detalle de la promo en un <dialog> ----------
+function iniciarModalPromo(modal) {
+    if (!modal || !modal.showModal || !window.PROMOS) {
+        return;
+    }
+    document.querySelectorAll(".descuento").forEach(function (tarjeta) {
+        tarjeta.addEventListener("click", function () {
+            var promo = window.PROMOS[tarjeta.dataset.promo];
+            modal.querySelectorAll("[data-campo]").forEach(function (campo) {
+                if (campo.dataset.campo === "logo") {
+                    campo.innerHTML = promo.logo; // armado y escapado en PHP
+                } else {
+                    campo.textContent = promo[campo.dataset.campo];
+                }
+            });
+            modal.showModal();
+        });
     });
-    cinta.addEventListener("mouseleave", function () {
-        pista.getAnimations().forEach(function (a) { a.playbackRate = 1; });
+    modal.querySelector(".promo-cerrar").addEventListener("click", function () { modal.close(); });
+    // Clic en el fondo oscuro (fuera de la caja) también cierra
+    modal.addEventListener("click", function (evento) {
+        if (evento.target === modal) { modal.close(); }
     });
 }
 

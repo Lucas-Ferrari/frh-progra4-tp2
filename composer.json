@@ -1,6 +1,6 @@
 {
     "name": "frh/banco-andino",
-    "description": "Banco Andino - Proyecto integrador Programación IV",
+    "description": "Future Bank - Proyecto integrador Programación IV",
     "type": "project",
     "require": {
         "php": ">=8.2",

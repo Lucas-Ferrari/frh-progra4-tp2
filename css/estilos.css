@@ -1,5 +1,5 @@
 /* =====================================================================
-   Banco Andino — Estilos generales
+   Future Bank — Estilos generales
    Estilo neobanco: fondo gris suave, tarjetas blancas redondeadas,
    un solo color de marca (violeta) y estados semánticos (verde / rojo).
    ===================================================================== */
@@ -117,7 +117,7 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--alto-header, 68px
 
 body {
     margin: 0;
-    font-family: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
+    font-family: "Schibsted Grotesk", "Segoe UI", Arial, sans-serif;
     font-size: 16px;
     line-height: 1.55;
     color: var(--texto);
@@ -405,6 +405,41 @@ code {
 .mensaje-error { background: var(--error-fondo); color: var(--error-texto); }
 .mensaje-info { background: var(--info-fondo); color: var(--info-texto); }
 
+/* Avisos de ?ok= / ?error=: flotan arriba a la derecha y no empujan la página */
+.toast {
+    position: fixed;
+    top: 88px;
+    right: 16px;
+    z-index: 100;
+    width: min(380px, calc(100% - 32px));
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0;
+    box-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.35);
+}
+
+.toast-cerrar {
+    margin-left: auto;
+    padding: 0 4px;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.toast.saliendo { opacity: 0; transform: translateX(16px); }
+
+@media (prefers-reduced-motion: no-preference) {
+    .toast { animation: toast-entrar 0.4s var(--ease) backwards; transition: opacity 0.3s, transform 0.3s; }
+}
+
+@keyframes toast-entrar {
+    from { opacity: 0; transform: translateX(24px); }
+}
+
 .password-provisoria {
     font-size: 1.1rem;
     font-weight: 700;
@@ -535,14 +570,16 @@ code {
 .portada .acciones { gap: 12px; margin-top: 32px; }
 .portada .boton { padding: 15px 30px; font-size: 1.05rem; }
 
-/* Tarjeta de muestra: ilustra el producto, no muestra datos reales */
+/* Tarjeta de muestra: ilustra el producto, no muestra datos reales.
+   Va al fondo del hero, sobre el saco de la foto: la cara queda libre */
 .portada-visual {
     position: relative;
     display: grid;
     gap: 16px;
     width: 100%;
-    max-width: 440px;
-    justify-self: center;
+    max-width: 260px;
+    align-self: end;
+    justify-self: end;
 }
 
 .tarjeta p { max-width: 72ch; }
@@ -570,7 +607,8 @@ code {
 }
 
 .muestra-tarjeta .numero {
-    font-size: 1.2rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
     letter-spacing: 0.14em;
     font-variant-numeric: tabular-nums;
     font-weight: 600;
@@ -588,8 +626,8 @@ code {
     background: var(--superficie);
     border-radius: var(--radio);
     box-shadow: var(--sombra-alta);
-    padding: 20px 22px;
-    width: 82%;
+    padding: 16px 18px;
+    width: calc(100% + 24px);
     margin: -40px -24px 0 auto;
     position: relative;
 }
@@ -598,7 +636,8 @@ code {
 
 .muestra-saldo .valor {
     display: block;
-    font-size: 1.9rem;
+    font-size: 1.5rem;
+    white-space: nowrap;
     font-weight: 800;
     letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
@@ -610,29 +649,18 @@ code {
     margin-top: 12px;
     padding-top: 12px;
     border-top: 1px solid var(--borde);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
 }
 
-.seccion-titulo {
+.seccion-titulo,
+.quienes h2,
+.banda-cta h2 {
     font-size: clamp(1.75rem, 3.5vw, 2.5rem);
     letter-spacing: -0.03em;
     margin: 48px 0 24px;
 }
 
-.producto { padding: 26px; }
-
-.producto .icono {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: var(--marca-suave);
-    color: var(--marca-texto);
-    display: grid;
-    place-items: center;
-    margin-bottom: 18px;
-}
-
-.producto p { color: var(--texto-suave); margin-bottom: 0; }
 
 .banda-cta {
     background: var(--marca);
@@ -647,24 +675,69 @@ code {
     gap: 20px;
 }
 
-.banda-cta h2 { color: #ffffff; margin-bottom: 6px; font-size: 1.75rem; }
+.banda-cta h2 { color: #ffffff; margin: 0 0 6px; }
 .banda-cta p { margin: 0; color: #e6defe; }
 .banda-cta a:not(.boton) { color: #ffffff; }
 .banda-cta .boton { background: #ffffff; color: var(--marca-oscura); }
 .banda-cta .boton:hover { background: #efeafd; }
 
+/* Productos: la caja de ahorro destacada (es la que se abre al registrarse)
+   y el resto en una lista con el ícono al lado del título */
+.productos {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.producto-destacado {
+    background: var(--marca);
+    color: #ffffff;
+    border-radius: var(--radio);
+    padding: 36px 32px;
+    --titulos: #ffffff;
+}
+
+.producto-destacado h3 { font-size: 1.75rem; letter-spacing: -0.02em; margin-bottom: 12px; }
+.producto-destacado p { color: #e4dcff; font-size: 1.05rem; margin-bottom: 28px; }
+.producto-destacado .boton { background: #ffffff; color: var(--marca-oscura); }
+.producto-destacado .boton:hover { background: #efeafd; }
+.producto-destacado :focus-visible { outline-color: #ffffff; }
+
+.productos-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.productos-lista li { padding: 20px 0; border-top: 1px solid var(--borde); }
+.productos-lista li:first-child { border-top: 0; padding-top: 4px; }
+
+.productos-lista h3 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+    font-size: 1.2rem;
+}
+
+.productos-lista svg { flex: none; color: var(--marca-texto); }
+.productos-lista p { color: var(--texto-suave); margin: 0 0 0 34px; /* alineado con el texto del título */ }
+
+@media (max-width: 860px) {
+    .productos { grid-template-columns: 1fr; }
+}
+
 /* ---------- Aparición al hacer scroll ---------- */
 /* La clase la agrega el JS: sin JS (o con movimiento reducido) todo se ve normal. */
 .revelar {
-    opacity: 0;
-    transform: translateY(28px);
-    /* Solo opacity y transform: son las propiedades que la GPU anima sin repintar */
-    transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+    transform: translateY(20px);
+    /* Solo transform: el bloque nunca queda invisible, la entrada la hacen sus partes */
+    transition: transform 0.5s var(--ease);
     transition-delay: var(--retraso, 0s);
 }
 
 .revelar.visible {
-    opacity: 1;
     transform: none;
 }
 
@@ -921,7 +994,7 @@ fieldset.campo {
     }
 
     .portada { gap: 40px; padding: 16px 0 40px; }
-    .portada-visual { max-width: 420px; }
+    .portada-visual { max-width: 260px; }
     .banda-cta { padding: 32px 24px; }
     .pie-links { align-items: flex-start; }
 }
@@ -975,7 +1048,10 @@ body { overflow-x: clip; }
     position: absolute;
     inset: 0 calc(50% - 50vw);
     z-index: -1;
-    background: var(--marca);
+    /* Foto a todo el ancho: el lado izquierdo es oscuro y deja lugar al texto.
+       El degradé queda de respaldo mientras carga la imagen */
+    background: url("../img/heroImage.jpg") 75% center / cover no-repeat,
+        linear-gradient(135deg, #6f2cf4 0%, #4717b8 100%);
 }
 
 /* La tarjeta de muestra pasa a tinta oscura plana: sobre el campo violeta,
@@ -1019,6 +1095,27 @@ body { overflow-x: clip; }
     background: #2a2736;
     box-shadow: none;
 }
+
+/* CTA del hero: una sola acción principal; "Ingresar" baja a link de texto */
+.portada .acciones:has(.boton-cta) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.portada .boton-cta {
+    padding: 20px 40px;
+    font-size: 1.2rem;
+    box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.45);
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), background 0.2s;
+}
+
+.portada .boton-cta svg { transition: transform 0.2s var(--ease); }
+.portada .boton-cta:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -12px rgb(0 0 0 / 0.5); }
+.portada .boton-cta:hover svg { transform: translateX(4px); }
+
+.cta-nota { font-size: 0.95rem; color: var(--texto-suave); }
+
 
 /* El anillo de foco violeta no se vería sobre violeta: en el hero es blanco */
 .portada :focus-visible { outline-color: #ffffff; }
@@ -1076,41 +1173,6 @@ body { overflow-x: clip; }
     .quienes { grid-template-columns: 1fr; gap: 24px; }
 }
 
-/* ---------- Dos violetas en la portada ----------
-   Un segundo campo plano, más profundo, detrás de las tarjetas: va desde
-   la mitad del hero hasta el borde de la ventana y se une con la cinta.
-   Dos tonos planos dan profundidad sin degradés. La tarjeta queda
-   montada sobre el corte entre los dos tonos, a propósito. */
-.portada::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 62%;                /* cae debajo de la tarjeta: queda sobre los dos tonos */
-    right: calc(50% - 50vw);
-    z-index: -1;
-    background: var(--marca-oscura);
-}
-
-/* El panel entra desde la derecha junto con las tarjetas (solo transform) */
-@media (prefers-reduced-motion: no-preference) {
-    .portada::after {
-        animation: portada-panel 1.1s var(--ease) both;
-    }
-}
-
-@keyframes portada-panel {
-    from { transform: translateX(100%); }
-}
-
-/* En una sola columna el panel queda detrás de las tarjetas, abajo */
-@media (max-width: 860px) {
-    .portada::after {
-        left: calc(50% - 50vw);
-        top: 58%;
-    }
-}
-
 /* ---------- Vida de la portada ---------- */
 
 /* Título, texto y botones entran escalonados al cargar.
@@ -1145,69 +1207,6 @@ body { overflow-x: clip; }
     transform: translateY(-10px);
 }
 
-/* Cinta de productos al pie del hero: el fondo se mueve con contenido real,
-   no con adornos. Franja plana en violeta oscuro, a todo el ancho. */
-.portada { padding-bottom: 176px; } /* lugar para la cinta */
-
-.portada-cinta {
-    position: absolute;
-    bottom: 0;
-    left: calc(50% - 50vw);
-    right: calc(50% - 50vw);
-    overflow: hidden;
-    background: var(--marca-oscura);
-    color: #ffffff;
-}
-
-.cinta-pista {
-    display: flex;
-    width: max-content;
-}
-
-/* Cada grupo termina con el mismo espacio que separa sus ítems:
-   así, al moverse exactamente la mitad, el bucle no se nota */
-.cinta-grupo {
-    display: flex;
-    gap: 48px;
-    padding: 20px 48px 20px 0;
-    font-size: 1.25rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    white-space: nowrap;
-}
-
-.cinta-grupo span {
-    display: inline-flex;
-    align-items: center;
-    gap: 48px;
-}
-
-/* Separador: un punto en el dorado del chip de la tarjeta */
-.cinta-grupo span::after {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #d9bf74;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .cinta-pista { animation: cinta-avanzar 40s linear infinite; }
-}
-
-@keyframes cinta-avanzar {
-    to { transform: translateX(-50%); }
-}
-
-@media (max-width: 860px) {
-    .portada { padding: 56px 0 136px; }
-}
-
-@media (max-width: 520px) {
-    .portada { padding: 40px 0 120px; }
-    .cinta-grupo { font-size: 1rem; padding: 16px 32px 16px 0; gap: 32px; }
-    .cinta-grupo span { gap: 32px; }
-}
 
 /* =====================================================================
    Cabecera violeta en el resto de las páginas
@@ -1361,20 +1360,21 @@ body { overflow-x: clip; }
    (título, texto, imagen, botones) suben una detrás de la otra */
 .revelar > *,
 .revelar > div > * {
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
-    transition-delay: calc(var(--retraso, 0s) + 0.1s);
+    /* Arranca ya visible a medias: a mitad del scroll nada parece vacío ni deshabilitado */
+    opacity: 0.35;
+    transform: translateY(12px);
+    transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+    transition-delay: calc(var(--retraso, 0s) + 0.05s);
 }
 
 .revelar > :nth-child(2),
-.revelar > div > :nth-child(2) { transition-delay: calc(var(--retraso, 0s) + 0.18s); }
+.revelar > div > :nth-child(2) { transition-delay: calc(var(--retraso, 0s) + 0.1s); }
 
 .revelar > :nth-child(3),
-.revelar > div > :nth-child(3) { transition-delay: calc(var(--retraso, 0s) + 0.26s); }
+.revelar > div > :nth-child(3) { transition-delay: calc(var(--retraso, 0s) + 0.15s); }
 
 .revelar > :nth-child(n+4),
-.revelar > div > :nth-child(n+4) { transition-delay: calc(var(--retraso, 0s) + 0.34s); }
+.revelar > div > :nth-child(n+4) { transition-delay: calc(var(--retraso, 0s) + 0.2s); }
 
 .revelar.visible > *,
 .revelar.visible > div > * {
@@ -1386,23 +1386,6 @@ body { overflow-x: clip; }
 .boton:hover { transform: translateY(-2px); }
 .boton:active { transform: translateY(0) scale(0.97); }
 
-/* Tarjetas de productos: se levantan y el ícono se llena de violeta */
-/* :not(.revelar): mientras el bloque está entrando manda la transición de entrada */
-.producto:not(.revelar) {
-    transition: transform 0.35s var(--ease);
-}
-
-.producto:hover { transform: translateY(-4px); }
-
-.producto .icono {
-    transition: background 0.35s var(--ease), color 0.35s var(--ease), transform 0.35s var(--ease);
-}
-
-.producto:hover .icono {
-    background: var(--marca);
-    color: #ffffff;
-    transform: rotate(-6deg) scale(1.06);
-}
 
 /* Estadísticas de los paneles: misma respuesta que los productos */
 .estadistica:not(.revelar) { transition: transform 0.35s var(--ease); }
@@ -1682,6 +1665,11 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
 .js .contenido > .portada:first-child {
     margin-top: calc((var(--alto-header) + 32px) * -1);
     padding-top: calc(96px + var(--alto-header));
+    /* El hero ocupa toda la primera pantalla; el resto aparece al scrollear.
+       svh: en celular no salta cuando se esconde la barra del navegador */
+    min-height: 100vh;
+    min-height: 100svh;
+    align-content: stretch;   /* la fila ocupa todo el alto: el texto se centra y las tarjetas bajan al fondo */
 }
 
 .js .contenido > h1:first-child,
@@ -1750,7 +1738,7 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
 /* Sobre violeta el anillo de foco violeta no se ve: en la barra transparente es blanco */
 .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) :focus-visible { outline-color: #ffffff; }
 
-/* El ícono "BA" es violeta: sobre el violeta se invierte para no desaparecer */
+/* El ícono es violeta: sobre el violeta se invierte para no desaparecer */
 .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .logo-icono {
     background: #ffffff;
     color: var(--marca-oscura);
@@ -1771,3 +1759,377 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
 
     .js .contenido > .formulario-centrado:first-child::before { height: calc(140px + var(--alto-header)); }
 }
+
+/* En celular el texto cae sobre la cara: un velo oscuro arriba lo vuelve legible */
+@media (max-width: 860px) {
+    .portada::before {
+        background: linear-gradient(to bottom, rgba(13, 8, 38, 0.85) 0%, rgba(13, 8, 38, 0.55) 45%, transparent 75%),
+            url("../img/heroImage.jpg") 72% center / cover no-repeat,
+            linear-gradient(135deg, #6f2cf4 0%, #4717b8 100%);
+    }
+}
+
+/* Pantallas anchas pero bajas: la cara de la foto queda más abajo, las tarjetas se achican más */
+@media (min-width: 861px) and (max-height: 860px) {
+    .portada-visual { max-width: 210px; }
+    .portada-visual .valor { font-size: 1.25rem; }
+}
+
+/* ---------- Descuentos de la semana (home) ----------
+   Carrusel infinito con scroll nativo: portada.js lo hace avanzar solo */
+.descuentos { margin-top: 48px; }
+
+.descuentos-encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.descuentos-encabezado .seccion-titulo { margin: 0; }
+
+.descuentos-flechas { display: flex; gap: 8px; }
+
+.carrusel-flecha {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--superficie);
+    color: var(--titulos);
+    cursor: pointer;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.carrusel-flecha:hover { background: var(--marca); color: #ffffff; }
+
+/* Sale del contenedor a todo el ancho; el padding vertical deja lugar a la tarjeta agrandada */
+.carrusel {
+    display: flex;
+    gap: 16px;
+    margin: 0 calc(50% - 50vw);
+    padding: 20px calc(50vw - 50%);
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.carrusel::-webkit-scrollbar { display: none; }
+
+.descuento {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 22px;
+    border: 0;
+    border-radius: var(--radio);
+    background: var(--superficie);
+    color: var(--texto);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+/* Hover/foco: la tarjeta se agranda (el carrusel ya se detuvo desde el JS) */
+.descuento:hover,
+.descuento:focus-visible {
+    transform: scale(1.08);
+    box-shadow: 0 18px 40px -16px rgba(21, 19, 31, 0.45);
+}
+
+.descuento-logo img,
+.descuento-iniciales {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    object-fit: contain;
+    background: #ffffff;
+}
+
+.descuento-iniciales { color: #ffffff; font-weight: 800; font-size: 1.1rem; }
+
+.descuento-dia {
+    margin-top: 14px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: var(--marca-suave);
+    color: var(--marca-texto);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.descuento-porcentaje {
+    margin-top: 10px;
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--marca-texto);
+    font-variant-numeric: tabular-nums;
+}
+
+.descuento-comercio { margin-top: 8px; font-weight: 700; font-size: 1.1rem; color: var(--titulos); }
+.descuento-rubro { color: var(--texto-suave); font-size: 0.9rem; }
+
+/* Modal con el detalle */
+.promo-modal {
+    width: min(440px, calc(100% - 32px));
+    padding: 32px;
+    border: 0;
+    border-radius: var(--radio);
+    background: var(--superficie);
+    color: var(--texto);
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.5);
+}
+
+.promo-modal::backdrop { background: rgba(13, 8, 38, 0.6); backdrop-filter: blur(4px); }
+
+.promo-modal .descuento-porcentaje { font-size: 2.25rem; margin: 16px 0 4px; }
+.promo-modal h3 { font-size: 1.5rem; margin: 0 0 20px; }
+
+.promo-cerrar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--superficie-2);
+    color: var(--titulos);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.promo-datos { margin: 0 0 16px; }
+.promo-datos div { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid var(--borde); }
+.promo-datos dt { color: var(--texto-suave); }
+.promo-datos dd { margin: 0; font-weight: 600; text-align: right; }
+
+.promo-legal { font-size: 0.85rem; color: var(--texto-suave); margin: 0 0 20px; }
+.promo-modal .boton { width: 100%; }
+
+@media (prefers-reduced-motion: no-preference) {
+    .promo-modal[open] { animation: promo-abrir 0.3s var(--ease); }
+}
+
+@keyframes promo-abrir {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+}
+
+/* La banda de contacto va en tinta oscura: así no quedan dos bandas violetas iguales */
+.banda-contacto { background: var(--tinta-profunda); }
+.banda-contacto p { color: #c9c5d6; }
+
+
+/* =====================================================================
+   Login y registro: tarjeta oscura sobre un escenario violeta con brillo
+   (mismo clima que el hero). La barra y el footer quedan como en el resto.
+   ===================================================================== */
+.visualmente-oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.acceso {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    min-height: 100svh;
+    margin-bottom: -56px;             /* llega hasta el footer (padding-bottom de .contenido) */
+    padding: 48px 0 80px;
+}
+
+/* Escenario a todo el ancho: brillo violeta arriba que se apaga en tinta */
+.acceso::before {
+    content: "";
+    position: absolute;
+    inset: 0 calc(50% - 50vw);
+    z-index: -1;
+    background:
+        radial-gradient(70% 55% at 50% 22%, #7b3cf0 0%, rgba(91, 46, 229, 0.55) 35%, transparent 70%),
+        linear-gradient(to bottom, #2a1260 0%, #0d0826 100%);
+}
+
+.js .contenido > .acceso:first-child {
+    margin-top: calc((var(--alto-header) + 32px) * -1);
+    padding-top: calc(48px + var(--alto-header));
+}
+
+.acceso-tarjeta {
+    /* Tokens claros dentro de la tarjeta: los textos y campos se adaptan solos */
+    --titulos: #ffffff;
+    --texto: #ffffff;
+    --texto-suave: #c9bdf0;
+    width: 100%;
+    max-width: 400px;
+    padding: 36px 32px 28px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    background: linear-gradient(to bottom, rgba(74, 34, 160, 0.55), rgba(26, 14, 60, 0.7));
+    backdrop-filter: blur(16px);
+    box-shadow: 0 30px 80px -24px rgba(0, 0, 0, 0.6);
+    color: var(--texto);
+    text-align: center;
+}
+
+.acceso-tarjeta-ancha { max-width: 560px; }
+
+.acceso-logo {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.08);
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.acceso h1 { margin: 14px 0 4px; font-size: 1.6rem; letter-spacing: -0.02em; }
+.acceso-subtitulo { margin: 0 0 24px; color: var(--texto-suave); font-size: 0.95rem; }
+
+.acceso form { text-align: left; }
+.acceso .campo { margin-bottom: 12px; }
+.acceso .campo > label:not(.visualmente-oculto) { color: var(--texto-suave); font-size: 0.85rem; }
+
+/* Campo con ícono adentro, en vidrio oscuro */
+.entrada { position: relative; }
+
+.entrada > svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.55);
+    pointer-events: none;
+    transition: color 0.2s var(--ease);
+}
+
+.acceso .entrada input {
+    padding: 13px 14px 13px 42px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.acceso .entrada input[type="date"] { padding-left: 104px; color-scheme: dark; }
+
+.entrada-prefijo {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+}
+.acceso .entrada input::placeholder { color: rgba(255, 255, 255, 0.5); }
+
+.acceso .entrada input:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.entrada:focus-within > svg { color: #ffffff; }
+
+.acceso .campo-error .entrada input { border-color: #ff9ba3; }
+.acceso .error-campo,
+.acceso .ayuda { color: var(--texto-suave); }
+.acceso .error-campo { color: #ff9ba3; }
+.acceso .ayuda.cumple { color: #6fd6a6; }
+
+.ver-password {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: rgba(255, 255, 255, 0.55);
+    cursor: pointer;
+}
+
+.ver-password svg { width: 18px; height: 18px; }
+.ver-password:hover,
+.ver-password[aria-pressed="true"] { color: #ffffff; }
+.acceso .entrada:has(.ver-password) input { padding-right: 46px; }
+
+/* Clientes / Empleados: control segmentado */
+.acceso-tipo {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    margin: 0 0 16px;
+    border: 0;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.acceso-tipo label {
+    flex: 1;
+    padding: 9px;
+    border-radius: 9px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--texto-suave);
+    cursor: pointer;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.acceso-tipo input { position: absolute; opacity: 0; }
+.acceso-tipo label:has(input:checked) { background: rgba(255, 255, 255, 0.16); color: #ffffff; }
+.acceso-tipo label:has(input:focus-visible) { outline: 2px solid #ffffff; outline-offset: 2px; }
+
+/* Botón principal blanco, como en el hero */
+.acceso-boton {
+    width: 100%;
+    margin-top: 8px;
+    background: #ffffff;
+    color: var(--marca-oscura);
+}
+
+.acceso-boton:hover { background: #efeafd; }
+.acceso-boton svg { transition: transform 0.2s var(--ease); }
+.acceso-boton:hover svg { transform: translateX(3px); }
+
+.acceso-pie { margin: 20px 0 0; font-size: 0.9rem; color: var(--texto-suave); }
+.acceso-pie a { color: #ffffff; font-weight: 700; }
+.acceso :focus-visible { outline-color: #ffffff; }
+
+@media (max-width: 520px) {
+    .acceso-tarjeta { padding: 28px 20px 24px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .acceso-tarjeta { animation: entrar-subir 0.6s var(--ease) backwards; }
+}
+
+/* Ícono de Future Bank (imagen) en la barra y en login/registro */
+img.logo-icono,
+img.acceso-logo { object-fit: cover; padding: 0; border: 0; }

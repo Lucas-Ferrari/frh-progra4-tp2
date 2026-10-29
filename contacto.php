@@ -25,7 +25,7 @@ require_once(__DIR__ . "/includes/header.php");
         <div class="mapa">
             <iframe
                 src="https://maps.google.com/maps?q=Av.%20Corrientes%201234%2C%20CABA%2C%20Argentina&z=16&output=embed"
-                title="Mapa de la sucursal de Banco Andino"
+                title="Mapa de la sucursal de Future Bank"
                 loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"
                 allowfullscreen></iframe>

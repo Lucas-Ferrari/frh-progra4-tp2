@@ -12,7 +12,7 @@ require_once(__DIR__ . "/includes/header.php");
 <h1>Sobre nosotros</h1>
 
 <?php if (empty($integrantes)): ?>
-    <p class="mensaje mensaje-info">Sección en construcción: pronto vas a conocer al equipo detrás de Banco Andino.</p>
+    <p class="mensaje mensaje-info">Sección en construcción: pronto vas a conocer al equipo detrás de Future Bank.</p>
 
     <div class="grilla" aria-hidden="true">
         <?php for ($i = 0; $i < 4; $i++): ?>
