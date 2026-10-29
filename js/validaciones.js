@@ -24,6 +24,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // ---------- Mostrar / ocultar contraseña ----------
+    document.querySelectorAll("[data-ver-password]").forEach(function (boton) {
+        var campo = document.getElementById(boton.dataset.verPassword);
+        boton.addEventListener("click", function () {
+            var visible = campo.type === "password";
+            campo.type = visible ? "text" : "password";
+            boton.setAttribute("aria-pressed", visible ? "true" : "false");
+            boton.setAttribute("aria-label", visible ? "Ocultar contraseña" : "Mostrar contraseña");
+        });
+    });
+
     // ---------- Toasts: se cierran con la X; los de éxito, solos a los 5 s ----------
     document.querySelectorAll(".toast").forEach(function (toast) {
         function cerrar() {
@@ -178,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Contraseña: la ayuda "Mínimo N caracteres" se pone en verde al cumplirse
     document.querySelectorAll("[data-password-min]").forEach(function (campo) {
-        var ayuda = campo.parentNode.querySelector(".ayuda");
+        var ayuda = (campo.closest(".campo") || campo.parentNode).querySelector(".ayuda");
         if (!ayuda) {
             return;
         }
@@ -202,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var aviso = document.createElement("span");
         aviso.className = "ayuda coincide";
         aviso.setAttribute("aria-live", "polite"); // se anuncia cuando aparece el texto
-        campo.parentNode.appendChild(aviso);
+        (campo.closest(".campo") || campo.parentNode).appendChild(aviso);
 
         function comparar() {
             var coinciden = campo.value !== "" && campo.value === otro.value;

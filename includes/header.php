@@ -24,11 +24,11 @@ function claseActivo($archivo)
     <!-- Color de la barra del navegador en el celular, según el tema del sistema -->
     <meta name="theme-color" content="#f5f5f8" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0b0a10" media="(prefers-color-scheme: dark)">
-    <title>Banco Andino - <?php echo e($titulo); ?></title>
+    <title>Future Bank - <?php echo e($titulo); ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="<?php echo RAIZ; ?>img/favicon.png">
+    <link rel="icon" type="image/png" href="<?php echo RAIZ; ?>img/FutureBank_favicon.png">
     <script>
         // Va antes del CSS para que no haya un parpadeo de color: aplica el tema
         // que la persona eligió con el botón. Si nunca eligió, manda el sistema.
@@ -63,8 +63,8 @@ function claseActivo($archivo)
 <header class="encabezado">
     <div class="contenedor encabezado-interior">
         <a href="<?php echo RAIZ; ?>index.php" class="logo">
-            <span class="logo-icono" aria-hidden="true">BA</span>
-            <span class="logo-texto">Banco Andino</span>
+            <img class="logo-icono" src="<?php echo RAIZ; ?>img/FutureBank_icon_navbar.png" alt="" width="36" height="36">
+            <span class="logo-texto">Future Bank</span>
         </a>
 
         <button type="button" class="menu-boton" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">

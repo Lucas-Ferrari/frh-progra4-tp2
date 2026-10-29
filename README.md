@@ -1,4 +1,4 @@
-# Banco Andino — Proyecto Integrador (Programación IV, 2º Parcial)
+# Future Bank — Proyecto Integrador (Programación IV, 2º Parcial)
 
 Sitio web de un banco hecho en **PHP + MySQL + HTML/CSS/JavaScript** (sin frameworks).
 
