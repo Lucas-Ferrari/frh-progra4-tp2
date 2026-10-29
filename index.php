@@ -16,9 +16,11 @@ require_once(__DIR__ . "/includes/header.php");
             <?php if (estaLogueado()): ?>
                 <a href="<?php echo e(panelSegunRol(rolActual())); ?>" class="boton">Ir a mi panel</a>
             <?php else: ?>
-                <a href="registro.php" class="boton">Registrarse</a>
-                <a href="login.php" class="boton boton-secundario">Ingresar</a>
-            <?php endif; ?>
+                <a href="registro.php" class="boton boton-cta">
+                    Registrate gratis
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+                <span class="cta-nota">Sin costo de mantenimiento · Lista en minutos</span>            <?php endif; ?>
         </div>
     </div>
 

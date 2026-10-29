@@ -117,7 +117,7 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--alto-header, 68px
 
 body {
     margin: 0;
-    font-family: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
+    font-family: "Schibsted Grotesk", "Segoe UI", Arial, sans-serif;
     font-size: 16px;
     line-height: 1.55;
     color: var(--texto);
@@ -404,6 +404,41 @@ code {
 .mensaje-ok { background: var(--exito-fondo); color: var(--exito-texto); }
 .mensaje-error { background: var(--error-fondo); color: var(--error-texto); }
 .mensaje-info { background: var(--info-fondo); color: var(--info-texto); }
+
+/* Avisos de ?ok= / ?error=: flotan arriba a la derecha y no empujan la página */
+.toast {
+    position: fixed;
+    top: 88px;
+    right: 16px;
+    z-index: 100;
+    width: min(380px, calc(100% - 32px));
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0;
+    box-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.35);
+}
+
+.toast-cerrar {
+    margin-left: auto;
+    padding: 0 4px;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.toast.saliendo { opacity: 0; transform: translateX(16px); }
+
+@media (prefers-reduced-motion: no-preference) {
+    .toast { animation: toast-entrar 0.4s var(--ease) backwards; transition: opacity 0.3s, transform 0.3s; }
+}
+
+@keyframes toast-entrar {
+    from { opacity: 0; transform: translateX(24px); }
+}
 
 .password-provisoria {
     font-size: 1.1rem;
@@ -975,7 +1010,7 @@ body { overflow-x: clip; }
     position: absolute;
     inset: 0 calc(50% - 50vw);
     z-index: -1;
-    background: var(--marca);
+    background: linear-gradient(135deg, #6f2cf4 0%, #4717b8 100%);
 }
 
 /* La tarjeta de muestra pasa a tinta oscura plana: sobre el campo violeta,
@@ -1019,6 +1054,27 @@ body { overflow-x: clip; }
     background: #2a2736;
     box-shadow: none;
 }
+
+/* CTA del hero: una sola acción principal; "Ingresar" baja a link de texto */
+.portada .acciones:has(.boton-cta) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.portada .boton-cta {
+    padding: 20px 40px;
+    font-size: 1.2rem;
+    box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.45);
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), background 0.2s;
+}
+
+.portada .boton-cta svg { transition: transform 0.2s var(--ease); }
+.portada .boton-cta:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -12px rgb(0 0 0 / 0.5); }
+.portada .boton-cta:hover svg { transform: translateX(4px); }
+
+.cta-nota { font-size: 0.95rem; color: var(--texto-suave); }
+
 
 /* El anillo de foco violeta no se vería sobre violeta: en el hero es blanco */
 .portada :focus-visible { outline-color: #ffffff; }
@@ -1074,41 +1130,6 @@ body { overflow-x: clip; }
 
 @media (max-width: 860px) {
     .quienes { grid-template-columns: 1fr; gap: 24px; }
-}
-
-/* ---------- Dos violetas en la portada ----------
-   Un segundo campo plano, más profundo, detrás de las tarjetas: va desde
-   la mitad del hero hasta el borde de la ventana y se une con la cinta.
-   Dos tonos planos dan profundidad sin degradés. La tarjeta queda
-   montada sobre el corte entre los dos tonos, a propósito. */
-.portada::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 62%;                /* cae debajo de la tarjeta: queda sobre los dos tonos */
-    right: calc(50% - 50vw);
-    z-index: -1;
-    background: var(--marca-oscura);
-}
-
-/* El panel entra desde la derecha junto con las tarjetas (solo transform) */
-@media (prefers-reduced-motion: no-preference) {
-    .portada::after {
-        animation: portada-panel 1.1s var(--ease) both;
-    }
-}
-
-@keyframes portada-panel {
-    from { transform: translateX(100%); }
-}
-
-/* En una sola columna el panel queda detrás de las tarjetas, abajo */
-@media (max-width: 860px) {
-    .portada::after {
-        left: calc(50% - 50vw);
-        top: 58%;
-    }
 }
 
 /* ---------- Vida de la portada ---------- */
@@ -1682,6 +1703,11 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
 .js .contenido > .portada:first-child {
     margin-top: calc((var(--alto-header) + 32px) * -1);
     padding-top: calc(96px + var(--alto-header));
+    /* El hero (con la cinta) ocupa toda la primera pantalla; el resto aparece al scrollear.
+       svh: en celular no salta cuando se esconde la barra del navegador */
+    min-height: 100vh;
+    min-height: 100svh;
+    align-content: center;
 }
 
 .js .contenido > h1:first-child,

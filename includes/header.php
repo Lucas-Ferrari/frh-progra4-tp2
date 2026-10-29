@@ -27,7 +27,7 @@ function claseActivo($archivo)
     <title>Banco Andino - <?php echo e($titulo); ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="<?php echo RAIZ; ?>img/favicon.png">
     <script>
         // Va antes del CSS para que no haya un parpadeo de color: aplica el tema
@@ -88,7 +88,6 @@ function claseActivo($archivo)
                 <?php else: ?>
                     <li><a href="<?php echo RAIZ; ?>nosotros.php"<?php echo claseActivo("nosotros.php"); ?>>Nosotros</a></li>
                     <li><a href="<?php echo RAIZ; ?>contacto.php"<?php echo claseActivo("contacto.php"); ?>>Contacto</a></li>
-                    <li><a href="<?php echo RAIZ; ?>registro.php"<?php echo claseActivo("registro.php"); ?>>Registrarse</a></li>
                     <li><a href="<?php echo RAIZ; ?>login.php" class="boton boton-chico boton-claro">Ingresar</a></li>
                 <?php endif; ?>
             </ul>
@@ -103,5 +102,8 @@ function claseActivo($archivo)
     </div>
 </header>
 
+<?php // Los toasts van fuera de <main>: adentro serían el primer hijo y romperían las reglas :first-child del layout
+mostrarMensajes(); ?>
+
 <main id="contenido" class="contenedor contenido" tabindex="-1">
-<?php mostrarMensajes(); ?>
+<?php mostrarPasswordProvisoria(); ?>

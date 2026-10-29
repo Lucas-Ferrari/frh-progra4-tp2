@@ -160,6 +160,8 @@ const PASSWORD_LONGITUD_MINIMA = 6;
 // ---------------------------------------------------------------------
 // Mensajes de éxito/error que llegan por la URL (?ok=... / ?error=...)
 // ---------------------------------------------------------------------
+const BOTON_CERRAR_TOAST = '<button type="button" class="toast-cerrar" aria-label="Cerrar aviso">&times;</button>';
+
 function mostrarMensajes()
 {
     $errores = [
@@ -212,15 +214,19 @@ function mostrarMensajes()
     ];
 
     if (isset($_GET["error"]) && isset($errores[$_GET["error"]])) {
-        echo '<div class="mensaje mensaje-error" role="alert">' . e($errores[$_GET["error"]]) . '</div>';
+        echo '<div class="mensaje mensaje-error toast" role="alert">' . e($errores[$_GET["error"]]) . BOTON_CERRAR_TOAST . '</div>';
     }
 
     if (isset($_GET["ok"]) && isset($exitos[$_GET["ok"]])) {
-        echo '<div class="mensaje mensaje-ok" role="status">' . e($exitos[$_GET["ok"]]) . '</div>';
+        echo '<div class="mensaje mensaje-ok toast" role="status">' . e($exitos[$_GET["ok"]]) . BOTON_CERRAR_TOAST . '</div>';
     }
+}
 
-    // Contraseña provisoria recién generada (alta de usuario / reset):
-    // se guarda una sola vez en la sesión y se muestra una sola vez.
+// Contraseña provisoria recién generada (alta de usuario / reset):
+// se guarda una sola vez en la sesión y se muestra una sola vez.
+// Va dentro de <main> (no es un toast): hay que poder copiarla con calma.
+function mostrarPasswordProvisoria()
+{
     if (isset($_SESSION["flash_password"])) {
         $flash = $_SESSION["flash_password"];
         unset($_SESSION["flash_password"]);

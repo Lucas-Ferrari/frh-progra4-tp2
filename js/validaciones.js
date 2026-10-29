@@ -24,6 +24,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // ---------- Toasts: se cierran con la X; los de éxito, solos a los 5 s ----------
+    document.querySelectorAll(".toast").forEach(function (toast) {
+        function cerrar() {
+            toast.classList.add("saliendo");
+            setTimeout(function () { toast.remove(); }, 300);
+        }
+        toast.querySelector(".toast-cerrar").addEventListener("click", cerrar);
+        if (toast.classList.contains("mensaje-ok")) setTimeout(cerrar, 5000);
+    });
+
     // ---------- Aparición al hacer scroll ----------
     // Solo se ocultan los bloques que están debajo de la pantalla al cargar,
     // así nada de lo que ya se ve "parpadea".
@@ -44,7 +54,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     }, 1600);
                 }
             });
-        }, { rootMargin: "0px 0px -10% 0px" });
+            // Entra cuando el bloque ya está bien adentro de la pantalla, no apenas asoma el borde:
+            // si no, la animación termina antes de que se lo llegue a ver
+        }, { rootMargin: "0px 0px -20% 0px", threshold: 0.15 });
 
         var bloques = document.querySelectorAll(
             ".contenido > *:not(.grilla):not(.menu-panel):not(.mensaje):not(.portada), .grilla > *, .menu-panel > *, .portada-visual > *"

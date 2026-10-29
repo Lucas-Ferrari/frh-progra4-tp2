@@ -68,8 +68,8 @@
   <!-- Sucursal: planta baja con cartel de la marca -->
   <rect x="630" y="410" width="170" height="50" fill="#15131f"/>
   <rect x="646" y="418" width="44" height="30" rx="8" fill="#5a2ee5"/>
-  <text x="668" y="439" font-family="Plus Jakarta Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">BA</text>
-  <text x="702" y="439" font-family="Plus Jakarta Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#efeafd">Banco Andino</text>
+  <text x="668" y="439" font-family="Schibsted Grotesk, Segoe UI, Arial, sans-serif" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">BA</text>
+  <text x="702" y="439" font-family="Schibsted Grotesk, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#efeafd">Banco Andino</text>
 
   <!-- Vereda y avenida en perspectiva -->
   <rect x="0" y="460" width="800" height="100" fill="#211f2d"/>
