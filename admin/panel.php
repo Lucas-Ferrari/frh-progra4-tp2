@@ -27,7 +27,6 @@ require_once(__DIR__ . "/../includes/header.php");
 ?>
 
 <h1>Panel de administración</h1>
-<p class="texto-suave">Hola, <?php echo e($_SESSION["nombre"]); ?>. Este es el resumen del banco.</p>
 
 <section class="grilla">
     <div class="tarjeta estadistica">
