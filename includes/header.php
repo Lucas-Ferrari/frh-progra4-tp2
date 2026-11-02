@@ -55,7 +55,8 @@ function claseActivo($archivo)
     <!-- Animaciones separadas de las validaciones: cada archivo, una responsabilidad -->
     <script src="<?php echo RAIZ; ?>js/animaciones.js?v=<?php echo $versionAnimaciones; ?>" defer></script>
 </head>
-<body>
+<?php // Todo menos la portada: estilo de producto, sin las bandas de marketing ?>
+<body<?php echo $subcarpeta === "" && $paginaActual === "index.php" ? "" : ' class="app"'; ?>>
 
 <!-- Permite saltear el menú con teclado o lector de pantalla e ir directo al contenido -->
 <a href="#contenido" class="saltar">Saltar al contenido</a>
