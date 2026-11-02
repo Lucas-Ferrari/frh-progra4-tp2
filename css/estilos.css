@@ -458,7 +458,7 @@ code {
 
 .grilla {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -502,8 +502,9 @@ code {
 
 .estadistica .valor {
     display: block;
-    font-size: 1.75rem;
+    font-size: clamp(1.35rem, 2.2vw, 1.75rem);
     font-weight: 800;
+    white-space: nowrap;
     letter-spacing: -0.02em;
     color: var(--titulos);
     font-variant-numeric: tabular-nums;
@@ -905,12 +906,14 @@ fieldset.campo {
 }
 
 .tabla th.texto-derecha { text-align: right; }
-/* Emails y mensajes largos cortan línea en lugar de romper la tabla */
-.tabla td { overflow-wrap: anywhere; }
+/* break-word (no anywhere): así DNI y emails no se parten letra por letra;
+   si la tabla no entra, el contenedor scrollea en horizontal */
+.tabla td { overflow-wrap: break-word; }
 .tabla tbody tr { transition: background 0.15s; }
 .tabla tbody tr:hover { background: var(--fila-hover); }
 .tabla tbody tr:last-child td { border-bottom: 0; }
-.tabla .inactivo { opacity: 0.55; }
+/* Color atenuado en vez de opacity: el texto mantiene contraste legible */
+.tabla .inactivo td { color: var(--texto-suave); }
 .tabla .no-leido { font-weight: 600; background: var(--fila-destacada); }
 
 .etiqueta-estado {
