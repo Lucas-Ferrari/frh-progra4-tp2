@@ -61,17 +61,24 @@ require_once(__DIR__ . "/includes/header.php");
 
 <h2 class="seccion-titulo">Nuestros productos</h2>
 
-<!-- La caja de ahorro va destacada: es la que se abre sola al registrarse.
+<!-- El plazo fijo va destacado: la invitación a abrir la cuenta ya está en la banda de abajo.
      El resto, en una lista simple con el ícono al lado del título. -->
 <section class="productos">
     <article class="producto-destacado">
-        <h3>Caja de ahorro</h3>
-        <p>En pesos y en dólares, sin costo de mantenimiento. Se abre automáticamente al registrarte.</p>
-        <?php if (!estaLogueado()): ?>
-            <a href="registro.php" class="boton">Abrí la tuya gratis</a>
-        <?php endif; ?>
+        <h3>Plazo fijo</h3>
+        <p>Hacé crecer tus ahorros con una tasa fija desde 30 días, en pesos o en dólares.</p>
+        <!-- Tasa de ejemplo: el banco es ficticio -->
+        <p class="producto-tasa"><span>TNA</span> 32%</p>
+        <a href="contacto.php" class="boton">Consultá con un asesor</a>
     </article>
     <ul class="productos-lista">
+        <li>
+            <h3>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+                Caja de ahorro
+            </h3>
+            <p>En pesos y en dólares, sin costo de mantenimiento. Se abre automáticamente al registrarte.</p>
+        </li>
         <li>
             <h3>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-6"/></svg>

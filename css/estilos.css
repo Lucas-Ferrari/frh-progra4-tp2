@@ -682,7 +682,7 @@ code {
 .banda-cta .boton { background: #ffffff; color: var(--marca-oscura); }
 .banda-cta .boton:hover { background: #efeafd; }
 
-/* Productos: la caja de ahorro destacada (es la que se abre al registrarse)
+/* Productos: el plazo fijo destacado (la apertura de cuenta ya tiene su banda)
    y el resto en una lista con el ícono al lado del título */
 .productos {
     display: grid;
@@ -701,6 +701,8 @@ code {
 
 .producto-destacado h3 { font-size: 1.75rem; letter-spacing: -0.02em; margin-bottom: 12px; }
 .producto-destacado p { color: #e4dcff; font-size: 1.05rem; margin-bottom: 28px; }
+.producto-destacado .producto-tasa { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.02em; color: #ffffff; line-height: 1; }
+.producto-destacado .producto-tasa span { font-size: 1rem; font-weight: 600; color: #e4dcff; margin-right: 6px; }
 .producto-destacado .boton { background: #ffffff; color: var(--marca-oscura); }
 .producto-destacado .boton:hover { background: #efeafd; }
 .producto-destacado :focus-visible { outline-color: #ffffff; }
