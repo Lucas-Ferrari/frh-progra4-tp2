@@ -458,7 +458,7 @@ code {
 
 .grilla {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -502,8 +502,9 @@ code {
 
 .estadistica .valor {
     display: block;
-    font-size: 1.75rem;
+    font-size: clamp(1.35rem, 2.2vw, 1.75rem);
     font-weight: 800;
+    white-space: nowrap;
     letter-spacing: -0.02em;
     color: var(--titulos);
     font-variant-numeric: tabular-nums;
@@ -681,27 +682,125 @@ code {
 .banda-cta .boton { background: #ffffff; color: var(--marca-oscura); }
 .banda-cta .boton:hover { background: #efeafd; }
 
-/* Productos: la caja de ahorro destacada (es la que se abre al registrarse)
+/* Productos: el plazo fijo destacado (la apertura de cuenta ya tiene su banda)
    y el resto en una lista con el ícono al lado del título */
 .productos {
     display: grid;
     grid-template-columns: 1fr 1.4fr;
     gap: 24px;
-    align-items: start;
+    align-items: stretch; /* la card destacada toma el alto de la lista */
 }
 
+/* Plazo fijo destacado: tinta oscura como la tarjeta del hero, brillo
+   violeta desde una esquina y una curva de crecimiento de fondo.
+   La tasa es la protagonista: en un producto financiero, el dato es el diseño */
 .producto-destacado {
-    background: var(--marca);
-    color: #ffffff;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
     border-radius: var(--radio);
-    padding: 36px 32px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--fondo-destacado);
+    box-shadow: var(--sombra-destacada);
+    color: #ffffff;
     --titulos: #ffffff;
 }
 
-.producto-destacado h3 { font-size: 1.75rem; letter-spacing: -0.02em; margin-bottom: 12px; }
-.producto-destacado p { color: #e4dcff; font-size: 1.05rem; margin-bottom: 28px; }
-.producto-destacado .boton { background: #ffffff; color: var(--marca-oscura); }
+/* Curva abajo, detrás de todo: se lee como "crece", no compite con el texto */
+.producto-curva {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: -1;
+    width: 100%;
+    height: 55%;
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+.producto-etiqueta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 99px;
+    border: 1px solid rgba(168, 139, 255, 0.35);
+    background: rgba(138, 99, 255, 0.14);
+    color: #c9b8ff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.producto-destacado h3 { margin: 18px 0 8px; font-size: 1.6rem; letter-spacing: -0.02em; }
+.producto-destacado .producto-cabecera p { margin: 0; max-width: 34ch; color: #b9b4cc; }
+
+/* La tasa: número grande, "%" chico arriba, etiqueta al costado */
+.producto-tasa {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    margin: auto 0 0;           /* empuja tasa, datos y botón al fondo */
+    padding-top: 32px;
+    line-height: 0.9;
+}
+
+.producto-tasa-valor {
+    font-size: clamp(4rem, 9vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+}
+
+.producto-tasa-valor small {
+    font-size: 0.45em;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    vertical-align: 0.9em;
+    margin-left: 2px;
+    color: #c9b8ff;
+}
+
+.producto-tasa-label {
+    margin-bottom: 0.55em;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #b9b4cc;
+}
+
+/* Datos clave en chips de vidrio */
+.producto-datos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 20px 0 24px;
+    padding: 0;
+    list-style: none;
+}
+
+.producto-datos li {
+    padding: 6px 12px;
+    border-radius: 99px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(6px);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #e4e1ef;
+}
+
+.producto-destacado .boton {
+    align-self: flex-start;
+    background: #ffffff;
+    color: var(--tinta-profunda);
+}
 .producto-destacado .boton:hover { background: #efeafd; }
+.producto-destacado .boton svg { transition: transform 0.2s var(--ease); }
+.producto-destacado .boton:hover svg { transform: translateX(3px); }
 .producto-destacado :focus-visible { outline-color: #ffffff; }
 
 .productos-lista {
@@ -712,6 +811,7 @@ code {
 
 .productos-lista li { padding: 20px 0; border-top: 1px solid var(--borde); }
 .productos-lista li:first-child { border-top: 0; padding-top: 4px; }
+.productos-lista li:last-child { padding-bottom: 0; }
 
 .productos-lista h3 {
     display: flex;
@@ -905,12 +1005,14 @@ fieldset.campo {
 }
 
 .tabla th.texto-derecha { text-align: right; }
-/* Emails y mensajes largos cortan línea en lugar de romper la tabla */
-.tabla td { overflow-wrap: anywhere; }
+/* break-word (no anywhere): así DNI y emails no se parten letra por letra;
+   si la tabla no entra, el contenedor scrollea en horizontal */
+.tabla td { overflow-wrap: break-word; }
 .tabla tbody tr { transition: background 0.15s; }
 .tabla tbody tr:hover { background: var(--fila-hover); }
 .tabla tbody tr:last-child td { border-bottom: 0; }
-.tabla .inactivo { opacity: 0.55; }
+/* Color atenuado en vez de opacity: el texto mantiene contraste legible */
+.tabla .inactivo td { color: var(--texto-suave); }
 .tabla .no-leido { font-weight: 600; background: var(--fila-destacada); }
 
 .etiqueta-estado {
@@ -1022,6 +1124,16 @@ fieldset.campo {
 
 :root {
     --tinta-profunda: #15131f; /* casi negro: la tarjeta del hero y el cierre */
+
+    /* Superficie destacada: tinta con brillo violeta desde la esquina y un
+       filo de luz arriba. La usan el plazo fijo de la home y los datos
+       protagonistas de los paneles (cuentas del cliente, estadísticas) */
+    --fondo-destacado:
+        radial-gradient(90% 70% at 100% 0%, rgba(138, 99, 255, 0.38) 0%, transparent 60%),
+        var(--tinta-profunda);
+    --sombra-destacada:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 30px 60px -30px rgba(90, 46, 229, 0.45);
 }
 
 /* El hero usa 100vw para salir del contenedor: esto evita
@@ -1360,10 +1472,9 @@ body { overflow-x: clip; }
    (título, texto, imagen, botones) suben una detrás de la otra */
 .revelar > *,
 .revelar > div > * {
-    /* Arranca ya visible a medias: a mitad del scroll nada parece vacío ni deshabilitado */
-    opacity: 0.35;
+    /* Solo un desplazamiento corto: el contenido nunca se ve lavado ni deshabilitado */
     transform: translateY(12px);
-    transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+    transition: transform 0.45s var(--ease);
     transition-delay: calc(var(--retraso, 0s) + 0.05s);
 }
 
@@ -1656,7 +1767,7 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
    ===================================================================== */
 :root { --alto-header: 76px; } /* un poco más alta: más presencia */
 
-.js .contenido {
+.js body:is(:not(.app), :has(.contenido > .acceso:first-child)) .contenido {
     margin-top: calc(var(--alto-header) * -1);
     padding-top: calc(var(--alto-header) + 32px);
 }
@@ -1686,10 +1797,11 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
 /* ---------- Estado transparente ----------
    Solo si: hay JS, todavía no se bajó, la página empieza con violeta
    (no con un mensaje) y el menú del celular está cerrado. */
-.js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra):not(:has(.menu.abierto)) {
+.js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra):not(:has(.menu.abierto)) {
     /* Velo de tinta semitransparente: la barra se distingue como franja
        (un escalón de tono más oscuro) y el violeta de abajo se sigue viendo */
     background: rgba(13, 8, 38, 0.24);
+    border-bottom-color: transparent; /* .app le pone borde: sobre la foto sería una raya */
     --titulos: #ffffff;           /* logo, íconos y hamburguesa en blanco */
     --gris-fondo: rgba(255, 255, 255, 0.16);
     transition: background 0.3s var(--ease), box-shadow 0.25s var(--ease);
@@ -1702,44 +1814,44 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
 /* En escritorio el menú está en la barra: links en blanco sobre el violeta.
    (En celular el menú es un desplegable claro y conserva sus colores.) */
 @media (min-width: 861px) {
-    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu a {
+    .js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu a {
         color: #ffffff;
     }
 
-    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu a:hover,
-    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu a.activo {
+    .js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu a:hover,
+    .js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu a.activo {
         color: #ffffff;
         background: rgba(255, 255, 255, 0.18);
     }
 
     /* "Ingresar" / "Salir": botón transparente con borde blanco */
-    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu .boton-claro {
+    .js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu .boton-claro {
         background: transparent;
         color: #ffffff;
         box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.85);
     }
 
-    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu .boton-claro:hover {
+    .js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu .boton-claro:hover {
         background: #ffffff;
         color: var(--marca-oscura);
     }
 
-    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu-usuario {
+    .js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu-usuario {
         color: #ffffff;
         border-left-color: rgba(255, 255, 255, 0.3);
     }
 
-    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu-usuario small,
-    .js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu-usuario svg {
+    .js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu-usuario small,
+    .js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .menu-usuario svg {
         color: rgba(255, 255, 255, 0.75);
     }
 }
 
 /* Sobre violeta el anillo de foco violeta no se ve: en la barra transparente es blanco */
-.js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) :focus-visible { outline-color: #ffffff; }
+.js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) :focus-visible { outline-color: #ffffff; }
 
 /* El ícono es violeta: sobre el violeta se invierte para no desaparecer */
-.js body:not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .logo-icono {
+.js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .logo-icono {
     background: #ffffff;
     color: var(--marca-oscura);
 }
@@ -1843,16 +1955,29 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
     box-shadow: 0 18px 40px -16px rgba(21, 19, 31, 0.45);
 }
 
+/* Placa blanca apaisada para el logo: los isotipos cuadrados (Carrefour, Shell)
+   y los logotipos horizontales (Cinemark, Coto) entran en la misma caja con
+   object-fit: contain. Blanca siempre: los logos están pensados para fondo blanco */
+.descuento-logo {
+    display: block;
+    align-self: stretch;
+}
+
 .descuento-logo img,
 .descuento-iniciales {
     display: grid;
     place-items: center;
-    width: 48px;
-    height: 48px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 64px;
+    padding: 12px 16px;
+    border: 1px solid var(--borde);
     border-radius: 12px;
     object-fit: contain;
     background: #ffffff;
 }
+
+.promo-modal .descuento-logo { max-width: 220px; }
 
 .descuento-iniciales { color: #ffffff; font-weight: 800; font-size: 1.1rem; }
 
@@ -2133,3 +2258,490 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
 /* Ícono de Future Bank (imagen) en la barra y en login/registro */
 img.logo-icono,
 img.acceso-logo { object-fit: cover; padding: 0; border: 0; }
+
+/* =====================================================================
+   App (cliente, operador, admin)
+   Las páginas de trabajo dejan el lenguaje de marketing (bandas violetas,
+   header transparente, tarjetas que saltan) y usan uno de producto:
+   fondo neutro, superficies con borde fino y el violeta solo para la
+   acción principal y el estado activo. header.php pone body.app.
+   ===================================================================== */
+
+.app .encabezado {
+    background: var(--superficie);
+    border-bottom: 1px solid var(--borde);
+}
+
+.app .encabezado.con-sombra { box-shadow: 0 1px 0 var(--borde), 0 8px 24px rgba(0, 0, 0, 0.12); }
+
+.app .menu a { border-radius: 8px; }
+.app .menu a.activo { background: var(--marca-suave); color: var(--marca-texto); }
+
+.app .contenido { padding-top: 40px; }
+
+/* ---------- Encabezado de página: título + acciones, sin banda ---------- */
+.app .contenido > h1,
+.app .contenido > h1 + .texto-suave,
+.app .contenido > .encabezado-seccion {
+    --titulos: inherit;
+    --texto-suave: inherit;
+    background: none;
+    box-shadow: none;
+    clip-path: none;
+    animation: none;
+}
+
+.app .contenido > h1,
+.app .contenido > .encabezado-seccion,
+.app .contenido > h1:first-child,
+.app .contenido > .encabezado-seccion:first-child {
+    margin: 0 0 28px;
+    padding: 0 0 24px;
+    border-bottom: 1px solid var(--borde);
+}
+
+.app .contenido > h1 + .texto-suave { margin: -16px 0 28px; padding: 0; }
+
+.app h1 { font-size: clamp(1.6rem, 2.4vw, 2rem); letter-spacing: -0.025em; color: var(--titulos); }
+.app h2 { font-size: 1.15rem; letter-spacing: -0.01em; margin: 36px 0 14px; }
+
+.app .contenido > .encabezado-seccion .boton:not(.boton-secundario) {
+    background: var(--marca);
+    color: #ffffff;
+}
+
+.app .contenido > .encabezado-seccion .boton:not(.boton-secundario):hover { background: var(--marca-oscura); }
+
+.app .contenido > .encabezado-seccion .boton-secundario {
+    background: transparent;
+    color: var(--titulos);
+    box-shadow: inset 0 0 0 1px var(--borde);
+}
+
+.app .contenido > .encabezado-seccion .boton-secundario:hover {
+    background: var(--superficie-2);
+    box-shadow: inset 0 0 0 1px var(--texto-suave);
+}
+
+.app .contenido > .encabezado-seccion :focus-visible,
+.app .contenido > h1 :focus-visible { outline-color: var(--marca); }
+
+/* ---------- Superficies ---------- */
+.app .tarjeta,
+.app .cuenta,
+.app .menu-panel a {
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+    box-shadow: none;
+}
+
+.app .tarjeta { padding: 24px; }
+
+/* Nada salta al pasar el mouse: en una herramienta de trabajo distrae */
+.app .estadistica:hover,
+.app .cuenta:hover,
+.app .menu-panel a:hover { transform: none; }
+
+/* Botones: menos píldora, más producto */
+.app .boton { border-radius: 10px; }
+.app .boton:hover { transform: none; }
+.app .boton-secundario { background: var(--superficie-2); box-shadow: inset 0 0 0 1px var(--borde); color: var(--titulos); }
+.app .boton-secundario:hover { background: var(--gris-fondo); box-shadow: inset 0 0 0 1px var(--borde); }
+
+/* ---------- Estadísticas: etiqueta arriba, número abajo ---------- */
+.app .grilla { gap: 12px; margin-bottom: 8px; }
+
+.app .estadistica {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px 22px;
+}
+
+.app .estadistica .etiqueta { font-size: 0.85rem; }
+.app .estadistica .valor { font-size: clamp(1.4rem, 2vw, 1.65rem); }
+
+/* ---------- Accesos del panel ---------- */
+.app .menu-panel { gap: 12px; }
+
+.app .menu-panel a {
+    position: relative;
+    padding: 20px 44px 20px 22px;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+}
+
+.app .menu-panel a::after {
+    content: "→";
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: var(--texto-suave);
+    transition: transform 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.app .menu-panel a:hover { background: var(--superficie); border-color: var(--marca); }
+.app .menu-panel a:hover::after { color: var(--marca-texto); transform: translateX(3px); }
+
+/* ---------- Cuentas del cliente ---------- */
+.app .cuentas { gap: 12px; }
+.app .cuenta { padding: 22px; }
+.app .cuenta-tipo { font-size: 0.95rem; }
+.app .cuenta .monto { margin-top: 22px; font-size: clamp(1.6rem, 2.4vw, 2rem); }
+.app .cuenta .monto + .texto-suave { font-size: 0.85rem; }
+.app .cuenta-pie { border-top: 1px solid var(--borde); margin-top: 20px; }
+.app .cuenta-pie a { text-decoration: none; }
+.app .cuenta-pie a::after { content: " →"; }
+
+/* ---------- Tablas ---------- */
+.app .tarjeta:has(> .tabla-contenedor),
+.app .tarjeta.tabla-contenedor { padding: 0; overflow: hidden; }
+
+.app .tarjeta > .filtros {
+    margin: 0;
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--borde);
+}
+
+.app .tarjeta > .tabla-contenedor { border-radius: 0; }
+
+.app .tabla { background: transparent; font-size: 0.925rem; }
+
+.app .tabla th {
+    padding: 12px 16px;
+    background: var(--superficie-2);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.app .tabla td { padding: 14px 16px; }
+.app .tabla td:first-child { color: var(--titulos); font-weight: 500; }
+
+/* Texto debajo de la tabla (cantidad de resultados) dentro de la tarjeta */
+.app .tarjeta > .tabla-contenedor + .texto-suave,
+.app .tarjeta > p.texto-suave:last-child {
+    margin: 0;
+    padding: 12px 22px;
+    border-top: 1px solid var(--borde);
+    font-size: 0.85rem;
+}
+
+/* Estados: punto de color + texto (no depende solo del color) */
+.app .etiqueta-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px 3px 8px;
+    font-size: 0.78rem;
+}
+
+.app .etiqueta-estado::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* ---------- Formularios ---------- */
+.app .contenido > .formulario-centrado::before { display: none; }
+
+.app .formulario-centrado { margin-top: 0; padding: 32px; }
+.app .formulario-centrado h1 { font-size: 1.5rem; margin-bottom: 6px; }
+.app .formulario-centrado h2 { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--borde); }
+
+.app .campo input,
+.app .campo select,
+.app .campo textarea { border-radius: 10px; }
+
+.app form > .acciones:last-child {
+    margin-top: 8px;
+    padding-top: 20px;
+    border-top: 1px solid var(--borde);
+}
+
+.app form.filtros > .acciones,
+.app form.filtros > .acciones:last-child { border-top: 0; padding-top: 0; margin-top: 0; }
+
+@media (max-width: 520px) {
+    .app .contenido { padding-top: 28px; }
+    .app .formulario-centrado { padding: 22px; }
+    .app .tarjeta > .filtros { padding: 16px; }
+}
+
+/* Montos grandes con cifras proporcionales: las tabulares de esta fuente
+   separan demasiado los dígitos fuera de una columna */
+.app .cuenta .monto,
+.app .estadistica .valor { font-variant-numeric: proportional-nums; letter-spacing: -0.03em; }
+
+/* "Salir" no compite con la acción principal de la página */
+.app .menu-usuario .boton-claro {
+    background: transparent;
+    color: var(--titulos);
+    box-shadow: inset 0 0 0 1px var(--borde);
+}
+
+.app .menu-usuario .boton-claro:hover { background: var(--superficie-2); color: var(--titulos); }
+
+/* Listados del admin: más ancho útil y acciones compactas por fila */
+.app .contenedor { max-width: 1280px; }
+.app .tabla .acciones { gap: 6px; }
+.app .tabla .boton-chico { padding: 6px 11px; font-size: 0.8rem; border-radius: 8px; }
+.app .tabla td:first-child { white-space: nowrap; }
+
+/* Tarjeta de listado con título propio (movimientos del admin) */
+.app .tarjeta:has(> .tabla-contenedor) > h2 {
+    margin: 0;
+    padding: 20px 22px 0;
+    font-size: 1rem;
+}
+
+.app .tarjeta:has(> .tabla-contenedor) > h2 + .filtros { border-bottom: 1px solid var(--borde); }
+.app .tarjeta > h2:first-child { margin-top: 0; font-size: 1rem; }
+
+/* Título + bajada: la línea divisoria va debajo de los dos */
+.app .contenido > h1:has(+ .texto-suave) { margin-bottom: 0; padding-bottom: 6px; border-bottom: 0; }
+.app .contenido > h1 + .texto-suave {
+    margin: 0 0 28px;
+    padding: 0 0 24px;
+    border-bottom: 1px solid var(--borde);
+}
+
+/* En celular las filas no se parten en 3 líneas: la tabla scrollea de costado */
+@media (max-width: 520px) {
+    .app .tabla td { white-space: nowrap; }
+}
+
+/* Sin entradas animadas en la app: el contenido de trabajo aparece de una
+   (los avisos y el menú siguen animados, están fuera de .contenido) */
+.app .contenido *,
+.app .contenido *::before { animation: none !important; }
+
+/* Contraseña provisoria: aviso destacado del ancho del formulario,
+   con la clave grande para dictarla o copiarla sin errores */
+.app .contenido > .mensaje-info:first-child {
+    max-width: 560px;
+    margin: 0 auto 20px;
+    padding: 16px 20px;
+    border: 1px solid var(--marca);
+    border-radius: 14px;
+    line-height: 1.6;
+}
+
+.app .password-provisoria {
+    padding: 3px 10px;
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    background: var(--superficie);
+    color: var(--titulos);
+    user-select: all;
+}
+
+/* Avisos abajo a la derecha: arriba tapaban los botones del encabezado de página */
+.app .toast {
+    top: auto;
+    bottom: 20px;
+    right: 20px;
+    border: 1px solid currentColor;
+    border-radius: 12px;
+}
+
+/* ---------- Contacto: íconos de trazo en lugar de emojis ---------- */
+.datos-contacto li { position: relative; padding-left: 28px; }
+.datos-contacto svg { position: absolute; left: 0; top: 3px; width: 18px; height: 18px; color: var(--marca-texto); }
+
+/* Estadísticas de a dos en celular: una por fila ocupaba toda la pantalla */
+@media (max-width: 520px) {
+    .app .grilla { grid-template-columns: 1fr 1fr; }
+    .app .estadistica { padding: 16px; }
+    .app .estadistica .valor { font-size: 1.15rem; white-space: normal; }
+}
+
+/* =====================================================================
+   Login y registro dentro del estilo de producto: tarjeta sólida sobre
+   el fondo, sin escenario con brillo ni vidrio esmerilado
+   ===================================================================== */
+/* Escenario: foto de la sucursal a todo el ancho, con un velo oscuro
+   para que la tarjeta se lea bien encima de cualquier zona de la foto */
+.app .acceso::before {
+    display: block;
+    background:
+        linear-gradient(to bottom, rgba(13, 8, 38, 0.55), rgba(13, 8, 38, 0.75)),
+        url("../img/SucursalCorrientes.jpg") center / cover no-repeat;
+}
+
+/* Ocupa toda la pantalla y llega hasta el footer (compensa el padding
+   de abajo de .contenido). Con JS, la regla .js .contenido > .acceso:first-child
+   la sube detrás del header transparente, igual que el hero de la portada */
+.app .acceso {
+    min-height: 100svh;
+    margin: 0 0 -56px;
+    padding: 48px 0;
+}
+
+/* Sin JS el header es sólido y no se superpone: la foto arranca debajo
+   (compensa los 40px de padding-top de .app .contenido) */
+html:not(.js) .app .contenido > .acceso:first-child {
+    min-height: calc(100svh - var(--alto-header));
+    margin-top: -40px;
+}
+
+.app .acceso-tarjeta {
+    --titulos: inherit;
+    --texto: inherit;
+    --texto-suave: inherit;
+    padding: 36px 32px 28px;
+    border: 1px solid var(--borde);
+    border-radius: 16px;
+    background: var(--superficie);
+    backdrop-filter: none;
+    box-shadow: none;
+}
+
+.app .acceso h1 { color: var(--titulos); }
+
+.app .acceso .entrada input {
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    background: var(--superficie-2);
+    color: var(--texto);
+}
+
+.app .acceso .entrada input:focus { background: var(--superficie); border-color: var(--marca); }
+.app .acceso .entrada input::placeholder { color: var(--placeholder); }
+.app .acceso .entrada input[type="date"] { color-scheme: inherit; }
+.app .entrada > svg,
+.app .entrada-prefijo,
+.app .ver-password { color: var(--texto-suave); }
+.app .entrada:focus-within > svg,
+.app .ver-password:hover,
+.app .ver-password[aria-pressed="true"] { color: var(--marca-texto); }
+
+.app .acceso-tipo { background: var(--superficie-2); box-shadow: inset 0 0 0 1px var(--borde); }
+.app .acceso-tipo label:has(input:checked) {
+    background: var(--superficie);
+    color: var(--titulos);
+    box-shadow: 0 0 0 1px var(--borde);
+}
+.app .acceso-tipo label:has(input:focus-visible) { outline-color: var(--marca); }
+
+.app .acceso-boton { background: var(--marca); color: #ffffff; }
+.app .acceso-boton:hover { background: var(--marca-oscura); }
+
+.app .acceso-pie a { color: var(--marca-texto); }
+.app .acceso :focus-visible { outline-color: var(--marca); }
+.app .acceso .campo-error .entrada input { border-color: var(--error-texto); }
+.app .acceso .error-campo { color: var(--error-texto); }
+.app .acceso .ayuda.cumple { color: var(--exito-texto); }
+
+/* =====================================================================
+   Portada: ritmo de bloques
+   La tarjeta violeta de "Caja de ahorro" y la banda de registro quedaban
+   dos bloques violetas seguidos, y "¿Tenés dudas?" (oscura) se pegaba al
+   footer oscuro. Registro pasa a tinta; contacto, a tarjeta clara.
+   ===================================================================== */
+.banda-cta:not(.banda-contacto) { background: var(--tinta-profunda); }
+.banda-cta:not(.banda-contacto) p { color: #c9c5d6; }
+.banda-cta:not(.banda-contacto) .boton { background: var(--marca); color: #ffffff; }
+.banda-cta:not(.banda-contacto) .boton:hover { background: var(--marca-oscura); }
+
+.banda-contacto {
+    background: var(--superficie);
+    color: var(--texto);
+    border: 1px solid var(--borde);
+}
+
+.banda-contacto h2 { color: var(--titulos); }
+.banda-contacto p { color: var(--texto-suave); }
+.banda-contacto .boton { background: transparent; color: var(--titulos); box-shadow: inset 0 0 0 1px var(--texto-suave); }
+.banda-contacto .boton:hover { background: var(--superficie-2); }
+.banda-contacto :focus-visible { outline-color: var(--marca); }
+
+
+/* =====================================================================
+   Paneles: los datos protagonistas con la superficie destacada
+   Las cuentas del cliente y las estadísticas de admin/operador toman el
+   estilo del plazo fijo de la home. Solo ellas: tablas, menú y formularios
+   siguen claros, si todo es destacado nada lo es.
+   Sin la curva de crecimiento: sobre saldos y totales reales sugeriría
+   una tendencia que los datos no muestran.
+   ===================================================================== */
+.app .cuenta,
+.app .estadistica {
+    /* Tokens claros adentro: textos, bordes y links se adaptan solos */
+    --titulos: #ffffff;
+    --texto: #e4e1ef;
+    --texto-suave: #b9b4cc;
+    --borde: rgba(255, 255, 255, 0.1);
+    --marca-texto: #c9b8ff;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    background: var(--fondo-destacado);
+    box-shadow: var(--sombra-destacada);
+    color: var(--texto);
+}
+
+/* Tipo de cuenta en chip, como la etiqueta "Destacado" */
+.app .cuenta-tipo {
+    align-self: flex-start;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-radius: 99px;
+    border: 1px solid rgba(168, 139, 255, 0.35);
+    background: rgba(138, 99, 255, 0.14);
+    color: var(--marca-texto);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* El saldo es el 32% de esta tarjeta */
+.app .cuenta .monto {
+    margin-top: 28px;
+    font-size: clamp(2rem, 3.2vw, 2.6rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+}
+
+.app .cuenta-pie a { color: #ffffff; }
+.app .cuenta-pie a::after { content: none; }
+.app .cuenta-pie a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.app .cuenta-pie a::before {
+    content: "→";
+    order: 2;
+    transition: transform 0.2s var(--ease);
+}
+.app .cuenta-pie a:hover::before { transform: translateX(3px); }
+.app .cuenta :focus-visible { outline-color: #ffffff; }
+
+/* Estadísticas: etiqueta chica en mayúsculas arriba, número grande abajo */
+.app .estadistica { padding: 22px 24px; gap: 14px; }
+
+.app .estadistica .etiqueta {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+}
+
+.app .estadistica .valor {
+    font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+}
+
+@media (max-width: 520px) {
+    .app .estadistica { padding: 18px; }
+    .app .estadistica .valor { font-size: 1.4rem; }
+}
+
