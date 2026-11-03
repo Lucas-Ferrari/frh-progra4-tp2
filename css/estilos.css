@@ -2685,8 +2685,7 @@ img.acceso-logo { object-fit: contain; padding: 0; border: 0; border-radius: 0; 
 }
 
 /* =====================================================================
-   Login y registro dentro del estilo de producto: tarjeta sólida sobre
-   el fondo, sin escenario con brillo ni vidrio esmerilado
+   Login y registro: foto de fondo con la tarjeta de vidrio violeta
    ===================================================================== */
 /* Escenario: foto de la sucursal a todo el ancho, con un velo oscuro
    para que la tarjeta se lea bien encima de cualquier zona de la foto */
@@ -2713,30 +2712,7 @@ html:not(.js) .app .contenido > .acceso:first-child {
     margin-top: -40px;
 }
 
-.app .acceso-tarjeta {
-    --titulos: inherit;
-    --texto: inherit;
-    --texto-suave: inherit;
-    padding: 36px 32px 28px;
-    border: 1px solid var(--borde);
-    border-radius: 16px;
-    background: var(--superficie);
-    backdrop-filter: none;
-    box-shadow: none;
-}
 
-.app .acceso h1 { color: var(--titulos); }
-
-.app .acceso .entrada input {
-    border: 1px solid var(--borde);
-    border-radius: 10px;
-    background: var(--superficie-2);
-    color: var(--texto);
-}
-
-.app .acceso .entrada input:focus { background: var(--superficie); border-color: var(--marca); }
-.app .acceso .entrada input::placeholder { color: var(--placeholder); }
-.app .acceso .entrada input[type="date"] { color-scheme: inherit; }
 .app .entrada > svg,
 .app .entrada-prefijo,
 .app .ver-password { color: var(--texto-suave); }
@@ -2744,22 +2720,6 @@ html:not(.js) .app .contenido > .acceso:first-child {
 .app .ver-password:hover,
 .app .ver-password[aria-pressed="true"] { color: var(--marca-texto); }
 
-.app .acceso-tipo { background: var(--superficie-2); box-shadow: inset 0 0 0 1px var(--borde); }
-.app .acceso-tipo label:has(input:checked) {
-    background: var(--superficie);
-    color: var(--titulos);
-    box-shadow: 0 0 0 1px var(--borde);
-}
-.app .acceso-tipo label:has(input:focus-visible) { outline-color: var(--marca); }
-
-.app .acceso-boton { background: var(--marca); color: #ffffff; }
-.app .acceso-boton:hover { background: var(--marca-oscura); }
-
-.app .acceso-pie a { color: var(--marca-texto); }
-.app .acceso :focus-visible { outline-color: var(--marca); }
-.app .acceso .campo-error .entrada input { border-color: var(--error-texto); }
-.app .acceso .error-campo { color: var(--error-texto); }
-.app .acceso .ayuda.cumple { color: var(--exito-texto); }
 
 /* =====================================================================
    Portada: ritmo de bloques
