@@ -45,7 +45,7 @@ if ($paso === "email") {
         "verificado" => false,
     ];
     // Debug: se muestra una sola vez en la página (consola, y en pantalla si el mail falló).
-    $_SESSION["flash_codigo"] = ["codigo" => $codigo, "mail_enviado" => $mailEnviado];
+    $_SESSION["flash_codigo"] = ["codigo" => $codigo, "mail_enviado" => $mailEnviado, "registrado" => $usuario !== null];
 
     redirigir("recuperar_password.php");
 }
