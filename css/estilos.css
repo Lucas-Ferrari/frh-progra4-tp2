@@ -1867,60 +1867,6 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
     color: #a9a5ba;
 }
 
-/* Panel del cliente: una tarjeta por cuenta */
-.cuentas {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-}
-
-.cuenta {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 24px;
-    border-radius: var(--radio);
-    background: var(--superficie);
-    transition: transform 0.35s var(--ease);
-}
-
-.cuenta:hover { transform: translateY(-3px); }
-
-.cuenta-tipo { font-weight: 700; color: var(--titulos); }
-
-.cuenta-numero {
-    color: var(--texto-suave);
-    font-size: 0.85rem;
-    font-variant-numeric: tabular-nums; /* números alineados, sin fuente monoespaciada */
-}
-
-/* El saldo es lo más importante de la tarjeta: va grande */
-.cuenta .monto {
-    margin-top: 18px;
-    font-size: 1.75rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: var(--titulos);
-    font-variant-numeric: tabular-nums;
-}
-
-.cuenta-pie {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-top: 18px;
-    padding-top: 14px;
-    font-size: 0.875rem;
-    color: var(--texto-suave);
-}
-
-.cuenta-pie a { font-weight: 700; }
-
-/* Fecha y link entran en una línea cada uno, sin partirse */
-.cuenta-pie > * { white-space: nowrap; }
-
 @media (max-width: 860px) {
     /* En celular: logo, botón de tema y hamburguesa en una fila */
     .boton-tema { margin-left: auto; order: 1; }
@@ -2493,7 +2439,6 @@ img.acceso-logo { object-fit: contain; padding: 0; border: 0; border-radius: 0; 
 
 /* ---------- Superficies ---------- */
 .app .tarjeta,
-.app .cuenta,
 .app .menu-panel a {
     border: 1px solid var(--borde);
     border-radius: 14px;
@@ -2504,7 +2449,6 @@ img.acceso-logo { object-fit: contain; padding: 0; border: 0; border-radius: 0; 
 
 /* Nada salta al pasar el mouse: en una herramienta de trabajo distrae */
 .app .estadistica:hover,
-.app .cuenta:hover,
 .app .menu-panel a:hover { transform: none; }
 
 /* Botones: menos píldora, más producto */
@@ -2549,16 +2493,6 @@ img.acceso-logo { object-fit: contain; padding: 0; border: 0; border-radius: 0; 
 
 .app .menu-panel a:hover { background: var(--superficie); border-color: var(--marca); }
 .app .menu-panel a:hover::after { color: var(--marca-texto); transform: translateX(3px); }
-
-/* ---------- Cuentas del cliente ---------- */
-.app .cuentas { gap: 12px; }
-.app .cuenta { padding: 22px; }
-.app .cuenta-tipo { font-size: 0.95rem; }
-.app .cuenta .monto { margin-top: 22px; font-size: clamp(1.6rem, 2.4vw, 2rem); }
-.app .cuenta .monto + .texto-suave { font-size: 0.85rem; }
-.app .cuenta-pie { border-top: 1px solid var(--borde); margin-top: 20px; }
-.app .cuenta-pie a { text-decoration: none; }
-.app .cuenta-pie a::after { content: " →"; }
 
 /* ---------- Tablas ---------- */
 .app .tarjeta:has(> .tabla-contenedor),
@@ -2640,7 +2574,6 @@ img.acceso-logo { object-fit: contain; padding: 0; border: 0; border-radius: 0; 
 
 /* Montos grandes con cifras proporcionales: las tabulares de esta fuente
    separan demasiado los dígitos fuera de una columna */
-.app .cuenta .monto,
 .app .estadistica .valor { font-variant-numeric: proportional-nums; letter-spacing: -0.03em; }
 
 /* "Salir" no compite con la acción principal de la página */
@@ -2833,7 +2766,6 @@ html:not(.js) .app .contenido > .acceso:first-child {
    Sin la curva de crecimiento: sobre saldos y totales reales sugeriría
    una tendencia que los datos no muestran.
    ===================================================================== */
-.app .cuenta,
 .app .estadistica {
     /* Tokens claros adentro: textos, bordes y links se adaptan solos */
     --titulos: #ffffff;
@@ -2847,44 +2779,6 @@ html:not(.js) .app .contenido > .acceso:first-child {
     box-shadow: var(--sombra-destacada);
     color: var(--texto);
 }
-
-/* Tipo de cuenta en chip, como la etiqueta "Destacado" */
-.app .cuenta-tipo {
-    align-self: flex-start;
-    margin-bottom: 10px;
-    padding: 5px 10px;
-    border-radius: 99px;
-    border: 1px solid rgba(168, 139, 255, 0.35);
-    background: rgba(138, 99, 255, 0.14);
-    color: var(--marca-texto);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-/* El saldo es el 32% de esta tarjeta */
-.app .cuenta .monto {
-    margin-top: 28px;
-    font-size: clamp(2rem, 3.2vw, 2.6rem);
-    line-height: 1.05;
-    letter-spacing: -0.04em;
-}
-
-.app .cuenta-pie a { color: #ffffff; }
-.app .cuenta-pie a::after { content: none; }
-.app .cuenta-pie a {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-.app .cuenta-pie a::before {
-    content: "→";
-    order: 2;
-    transition: transform 0.2s var(--ease);
-}
-.app .cuenta-pie a:hover::before { transform: translateX(3px); }
-.app .cuenta :focus-visible { outline-color: #ffffff; }
 
 /* Estadísticas: etiqueta chica en mayúsculas arriba, número grande abajo */
 .app .estadistica { padding: 22px 24px; gap: 14px; }
@@ -2908,3 +2802,143 @@ html:not(.js) .app .contenido > .acceso:first-child {
     .app .estadistica .valor { font-size: 1.4rem; }
 }
 
+
+/* =====================================================================
+   Panel del cliente: cuentas compactas + últimos movimientos
+   Cada cuenta es una fila clickeable (lleva a sus movimientos): moneda,
+   tipo y número a la izquierda, saldo a la derecha. Al lado, una lista
+   con los últimos 5 movimientos de todas las cuentas mezclados.
+   ===================================================================== */
+.panel-cliente {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: 32px;
+    align-items: start;
+}
+
+.panel-cliente > section > h2 { margin-top: 0; }
+
+.cuentas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cuenta {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+    background: var(--superficie);
+    color: var(--texto);
+    text-decoration: none;
+    transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+}
+
+.cuenta:hover { border-color: var(--marca); }
+.cuenta:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
+
+.cuenta-moneda {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--marca-suave);
+    color: var(--marca-texto);
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.cuenta-datos,
+.cuenta-saldo { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+.cuenta-tipo { font-weight: 600; color: var(--titulos); font-size: 0.95rem; }
+
+.cuenta-numero {
+    color: var(--texto-suave);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.cuenta-saldo { align-items: flex-end; text-align: right; }
+
+.cuenta .monto {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--titulos);
+    white-space: nowrap;
+}
+
+.cuenta-saldo .texto-suave { font-size: 0.75rem; }
+
+.cuenta-ir {
+    color: var(--texto-suave);
+    transition: transform 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.cuenta:hover .cuenta-ir { color: var(--marca-texto); transform: translateX(3px); }
+
+/* Últimos movimientos: lista con ícono de entrada/salida */
+.app .tarjeta.ultimos-movimientos { padding: 6px 0; }
+.ultimos-movimientos .vacio { margin: 0; padding: 24px; }
+
+.lista-movimientos { list-style: none; margin: 0; padding: 0; }
+
+.lista-movimientos li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+}
+
+.lista-movimientos li + li { border-top: 1px solid var(--borde); }
+
+.movimiento-icono {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-weight: 700;
+}
+
+.movimiento-icono.ingreso { background: var(--exito-fondo); color: var(--exito-texto); }
+.movimiento-icono.egreso { background: var(--gris-fondo); color: var(--titulos); }
+
+.movimiento-datos { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+.movimiento-descripcion {
+    color: var(--titulos);
+    font-weight: 500;
+    font-size: 0.925rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.movimiento-meta { color: var(--texto-suave); font-size: 0.78rem; }
+
+.movimiento-monto {
+    font-size: 0.925rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+    .panel-cliente { grid-template-columns: 1fr; gap: 8px; }
+    .panel-cliente > section + section > h2 { margin-top: 28px; }
+}
+
+@media (max-width: 420px) {
+    .cuenta { grid-template-columns: auto minmax(0, 1fr) auto; padding: 14px; gap: 12px; }
+    .cuenta-ir { display: none; }
+    .cuenta .monto { font-size: 1.05rem; }
+    .lista-movimientos li { padding: 12px 14px; gap: 12px; }
+}
