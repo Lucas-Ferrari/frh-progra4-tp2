@@ -2022,13 +2022,6 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
 /* Sobre violeta el anillo de foco violeta no se ve: en la barra transparente es blanco */
 .js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) :focus-visible { outline-color: #ffffff; }
 
-/* El ícono es violeta: sobre el violeta se invierte para no desaparecer */
-.js body:is(:not(.app), :has(.contenido > .acceso:first-child)):not(:has(.contenido > .mensaje:first-child)) .encabezado:not(.con-sombra) .logo-icono {
-    background: #ffffff;
-    color: var(--marca-oscura);
-}
-
-.logo-icono { transition: background 0.3s var(--ease), color 0.3s var(--ease); }
 
 /* Celular y tablet: mismos espaciados que antes, más el alto del header */
 @media (max-width: 860px) {
@@ -2429,7 +2422,7 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
 
 /* Ícono de Future Bank (imagen) en la barra y en login/registro */
 img.logo-icono,
-img.acceso-logo { object-fit: cover; padding: 0; border: 0; }
+img.acceso-logo { object-fit: contain; padding: 0; border: 0; border-radius: 0; background: none; }
 
 /* =====================================================================
    App (cliente, operador, admin)
