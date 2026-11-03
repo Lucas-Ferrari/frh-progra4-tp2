@@ -2985,3 +2985,38 @@ body.app:has(.panel-cliente) {
     .cuenta .monto { font-size: 1.5rem; }
     .lista-movimientos li { padding: 12px 14px; gap: 12px; }
 }
+
+/* ---------- Panel admin: saldos grandes, conteos dentro de cada acceso ---------- */
+.app .grilla-saldos { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 24px; }
+.app .grilla-saldos .estadistica { padding: 32px; min-height: 150px; }
+.app .grilla-saldos .estadistica .valor { font-size: clamp(2rem, 3.4vw, 2.75rem); }
+.menu-panel .dato { display: block; font-size: 1.5rem; font-weight: 800; color: var(--titulos); margin-bottom: 6px; }
+.menu-panel .aviso {
+    display: inline-block;
+    min-width: 1.4em;
+    padding: 0 6px;
+    margin-left: 6px;
+    border-radius: 999px;
+    background: #e5484d;
+    color: #fff;
+    font-size: 0.75rem;
+    line-height: 1.4em;
+    text-align: center;
+    vertical-align: middle;
+}
+@media (max-width: 520px) { .app .grilla-saldos { grid-template-columns: 1fr; } }
+
+/* v2: los saldos del admin vuelven a la superficie clara del resto del panel,
+   sin el fondo destacado con brillo; una franja de marca los distingue */
+.app .grilla-saldos .estadistica {
+    --titulos: inherit;
+    --texto: inherit;
+    --texto-suave: inherit;
+    --borde: inherit;
+    --marca-texto: inherit;
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    border-left: 4px solid var(--marca);
+    border-radius: 14px;
+    box-shadow: none;
+}
