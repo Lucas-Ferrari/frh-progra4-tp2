@@ -65,11 +65,42 @@ require_once(__DIR__ . "/includes/header.php");
      El resto, en una lista simple con el ícono al lado del título. -->
 <section class="productos">
     <article class="producto-destacado">
-        <h3>Plazo fijo</h3>
-        <p>Hacé crecer tus ahorros con una tasa fija desde 30 días, en pesos o en dólares.</p>
+        <!-- Línea de crecimiento decorativa de fondo -->
+        <svg class="producto-curva" viewBox="0 0 400 160" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+                <linearGradient id="curva-relleno" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#8a63ff" stop-opacity="0.35"/>
+                    <stop offset="1" stop-color="#8a63ff" stop-opacity="0"/>
+                </linearGradient>
+            </defs>
+            <path d="M0 140 C 60 132, 90 118, 140 112 S 230 84, 280 66 S 360 22, 400 12 V160 H0 Z" fill="url(#curva-relleno)"/>
+            <path d="M0 140 C 60 132, 90 118, 140 112 S 230 84, 280 66 S 360 22, 400 12" fill="none" stroke="#a88bff" stroke-width="2" vector-effect="non-scaling-stroke"/>
+        </svg>
+
+        <div class="producto-cabecera">
+            <span class="producto-etiqueta">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+                Destacado
+            </span>
+            <h3>Plazo fijo</h3>
+            <p>Hacé crecer tus ahorros con una tasa fija, en pesos o en dólares.</p>
+        </div>
+
         <!-- Tasa de ejemplo: el banco es ficticio -->
-        <p class="producto-tasa"><span>TNA</span> 32%</p>
-        <a href="contacto.php" class="boton">Consultá con un asesor</a>
+        <p class="producto-tasa">
+            <span class="producto-tasa-valor">32<small>%</small></span>
+            <span class="producto-tasa-label">TNA</span>
+        </p>
+
+        <ul class="producto-datos">
+            <li>Desde 30 días</li>
+            <li>ARS · USD</li>
+        </ul>
+
+        <a href="contacto.php" class="boton">
+            Consultá con un asesor
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+        </a>
     </article>
     <ul class="productos-lista">
         <li>
@@ -116,7 +147,7 @@ require_once(__DIR__ . "/includes/header.php");
 
 <?php
 // Promos de ejemplo: % y días inventados (el banco es ficticio). El logo se busca en
-// img/descuentos/<logo>.svg o .png; si no está, se muestran las iniciales en el color de la marca.
+// svg/<logo>.svg (o .png si la marca no publica vector); si no está, se muestran las iniciales en el color de la marca.
 $descuentos = [
     ["comercio" => "Carrefour", "logo" => "carrefour", "color" => "#004e9f", "rubro" => "Supermercados", "porcentaje" => 25, "dia" => "Miércoles", "tope" => 15000],
     ["comercio" => "Coto", "logo" => "coto", "color" => "#e30613", "rubro" => "Supermercados", "porcentaje" => 20, "dia" => "Jueves", "tope" => 12000],
@@ -131,9 +162,10 @@ $descuentos = [
 function logoDescuento($d)
 {
     foreach (["svg", "png"] as $ext) {
-        $archivo = "img/descuentos/" . $d["logo"] . "." . $ext;
+        $archivo = "svg/" . $d["logo"] . "." . $ext;
         if (file_exists(__DIR__ . "/" . $archivo)) {
-            return '<img src="' . e($archivo) . '" alt="" width="48" height="48">';
+            // alt vacío: el nombre del comercio ya está escrito en la tarjeta
+            return '<img src="' . e($archivo) . '" alt="" width="176" height="64" loading="lazy">';
         }
     }
     $iniciales = mb_substr($d["comercio"], 0, 2);
