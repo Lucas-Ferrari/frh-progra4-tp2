@@ -6,9 +6,14 @@
 
 require_once(__DIR__ . "/../includes/auth.php");
 require_once(__DIR__ . "/../includes/conexion.php");
+require_once(__DIR__ . "/../includes/inversiones.php");
 
 requerirPasswordActualizada();
 requerirRol([ROL_ADMIN, ROL_OPERADOR]);
+
+// Si a algún cliente se le venció un plazo fijo, se acredita antes de
+// mostrar saldos (no hay tarea programada: ver includes/inversiones.php).
+acreditarPlazosVencidos($conexion);
 
 $esAdmin = rolActual() === ROL_ADMIN;
 $idCuenta = isset($_GET["id_cuenta"]) ? (int) $_GET["id_cuenta"] : 0;
@@ -200,7 +205,7 @@ require_once(__DIR__ . "/../includes/header.php");
                             <td class="texto-derecha <?php echo $mov["monto"] < 0 ? "negativo" : "positivo"; ?>"><?php echo e(formatoMonto($mov["monto"], $cuenta["moneda"])); ?></td>
                             <?php if ($esAdmin): ?>
                                 <td>
-                                    <?php if ($mov["tipo"] !== "Transferencia" && $cuenta["activa"]): ?>
+                                    <?php if (movimientoEditable($mov["tipo"]) && $cuenta["activa"]): ?>
                                         <div class="acciones">
                                             <a href="movimiento_form.php?id=<?php echo (int) $mov["id_movimiento"]; ?>" class="boton boton-chico boton-secundario">Editar</a>
                                             <form action="../procesos/procesar_movimiento.php" method="POST" data-confirmar="¿Eliminar este movimiento? El saldo de la cuenta se va a recalcular.">

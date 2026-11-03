@@ -161,12 +161,30 @@ document.addEventListener("DOMContentLoaded", function () {
             // En una transferencia, un doble clic podría duplicar la operación.
             // Solo en POST: los buscadores (GET) no modifican datos.
             if (form.method.toLowerCase() === "post") {
-                var boton = form.querySelector('button[type="submit"]');
-                if (boton) {
+                // Un botón deshabilitado NO se envía con el formulario: si el que se
+                // tocó tiene name/value (ej. Ingresar / Retirar en una reserva), se
+                // copia a un campo oculto para que el servidor sepa qué acción fue.
+                var tocado = evento.submitter;
+                var anterior = form.querySelector("input[data-boton-enviado]");
+                if (anterior) {
+                    anterior.remove();   // por si volvió con "Atrás" y envía de nuevo
+                }
+                if (tocado && tocado.name) {
+                    var oculto = document.createElement("input");
+                    oculto.type = "hidden";
+                    oculto.name = tocado.name;
+                    oculto.value = tocado.value;
+                    oculto.setAttribute("data-boton-enviado", "");
+                    form.appendChild(oculto);
+                }
+                // Se bloquean todos los botones de envío del formulario, no solo el primero.
+                form.querySelectorAll('button[type="submit"]').forEach(function (boton) {
                     boton.setAttribute("data-texto-original", boton.textContent);
                     boton.disabled = true;
-                    boton.textContent = "Procesando…";
-                }
+                    if (!tocado || boton === tocado) {
+                        boton.textContent = "Procesando…";
+                    }
+                });
             }
         });
     });

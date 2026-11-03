@@ -186,7 +186,14 @@ function mostrarMensajes()
         "cuenta_destino" => "La cuenta destino no existe, está inactiva o es la misma cuenta de origen.",
         "moneda" => "Las cuentas de origen y destino deben tener la misma moneda.",
         "cuenta_saldo" => "No se puede dar de baja una cuenta con saldo distinto de 0.",
-        "no_editable" => "Las transferencias no se pueden modificar ni eliminar (afectan a dos cuentas).",
+        "no_editable" => "Las transferencias, plazos fijos y reservas no se pueden modificar ni eliminar: están atados a otra cuenta o a una inversión.",
+        "cuenta_inversiones" => "La cuenta tiene un plazo fijo activo o plata en reservas. Primero hay que liberarla.",
+        "plazo" => "Elegí un plazo válido.",
+        "plazo_minimo" => "El monto mínimo para un plazo fijo es $ 1.000 (o US$ 100 en dólares).",
+        "reserva" => "La reserva no existe o no está disponible.",
+        "reserva_nombre" => "Ponele un nombre a la reserva (hasta 40 caracteres).",
+        "reserva_meta" => "La meta tiene que ser un número mayor a 0.",
+        "reserva_saldo" => "No tenés tanta plata en esa reserva.",
         "auto_baja" => "No podés darte de baja a vos mismo.",
         "auto_rol" => "No podés quitarte el rol de administrador a vos mismo.",
         "rol" => "Rol inválido.",
@@ -215,6 +222,11 @@ function mostrarMensajes()
         "leido" => "Consulta marcada como leída.",
         "movimiento" => "Movimiento registrado correctamente.",
         "cliente" => "Cliente cargado correctamente.",
+        "plazo_fijo" => "¡Listo! Constituiste el plazo fijo. Al vencer, el capital y el interés vuelven a tu cuenta.",
+        "reserva_creada" => "Reserva creada. Desde mañana empieza a rendir.",
+        "reserva_ingreso" => "Ingresaste plata a la reserva.",
+        "reserva_retiro" => "Retiraste plata de la reserva. Ya está en tu cuenta.",
+        "reserva_cerrada" => "Cerraste la reserva. Todo lo que tenía volvió a tu cuenta.",
     ];
 
     if (isset($_GET["error"]) && isset($errores[$_GET["error"]])) {
@@ -425,6 +437,16 @@ function leerMonto($texto)
     }
     $monto = round((float) $texto, 2);
     return ($monto > 0 && $monto < 10000000000) ? $monto : null;
+}
+
+// Movimientos que un empleado puede corregir o borrar a mano. Los demás
+// (transferencias, plazos fijos, reservas) están atados a otra cuenta o a
+// una inversión: tocarlos dejaría los saldos inconsistentes.
+const TIPOS_MOVIMIENTO_MANUAL = ["Depósito", "Extracción"];
+
+function movimientoEditable($tipo)
+{
+    return in_array($tipo, TIPOS_MOVIMIENTO_MANUAL, true);
 }
 
 const TIPOS_CUENTA = ["Caja de ahorro", "Cuenta corriente"];

@@ -103,8 +103,9 @@ try {
     $idCuenta = (int) $movimiento["id_cuenta"];
     $volver = "admin/movimientos.php?id_cuenta=" . $idCuenta;
 
-    // Las transferencias afectan a dos cuentas: no se tocan.
-    if ($movimiento["tipo"] === "Transferencia" || !$movimiento["activa"]) {
+    // Transferencias, plazos fijos y reservas están atados a otra cuenta o a
+    // una inversión: no se tocan (ver TIPOS_MOVIMIENTO_MANUAL).
+    if (!movimientoEditable($movimiento["tipo"]) || !$movimiento["activa"]) {
         mysqli_rollback($conexion);
         redirigir($volver . "&error=no_editable");
     }
