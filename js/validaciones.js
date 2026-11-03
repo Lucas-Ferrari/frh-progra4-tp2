@@ -24,6 +24,27 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // ---------- Mostrar / ocultar contraseña ----------
+    document.querySelectorAll("[data-ver-password]").forEach(function (boton) {
+        var campo = document.getElementById(boton.dataset.verPassword);
+        boton.addEventListener("click", function () {
+            var visible = campo.type === "password";
+            campo.type = visible ? "text" : "password";
+            boton.setAttribute("aria-pressed", visible ? "true" : "false");
+            boton.setAttribute("aria-label", visible ? "Ocultar contraseña" : "Mostrar contraseña");
+        });
+    });
+
+    // ---------- Toasts: se cierran con la X; los de éxito, solos a los 5 s ----------
+    document.querySelectorAll(".toast").forEach(function (toast) {
+        function cerrar() {
+            toast.classList.add("saliendo");
+            setTimeout(function () { toast.remove(); }, 300);
+        }
+        toast.querySelector(".toast-cerrar").addEventListener("click", cerrar);
+        if (toast.classList.contains("mensaje-ok")) setTimeout(cerrar, 5000);
+    });
+
     // ---------- Aparición al hacer scroll ----------
     // Solo se ocultan los bloques que están debajo de la pantalla al cargar,
     // así nada de lo que ya se ve "parpadea".
@@ -44,7 +65,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     }, 1600);
                 }
             });
-        }, { rootMargin: "0px 0px -10% 0px" });
+            // Entra cuando el bloque ya está bien adentro de la pantalla, no apenas asoma el borde:
+            // si no, la animación termina antes de que se lo llegue a ver
+        }, { rootMargin: "0px 0px -20% 0px", threshold: 0.15 });
 
         var bloques = document.querySelectorAll(
             ".contenido > *:not(.grilla):not(.menu-panel):not(.mensaje):not(.portada), .grilla > *, .menu-panel > *, .portada-visual > *"
@@ -66,6 +89,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 bloque.style.setProperty("--retraso", (indice * 0.09) + "s");
             }
             bloque.classList.add("revelar");
+            if (bloque.closest(".portada")) {
+                // En el hero entra al cargar, no al scrollear: las tarjetas están al fondo de la
+                // pantalla y nunca llegarían al punto de disparo del observador
+                setTimeout(function () { bloque.classList.add("visible"); }, 50);
+                setTimeout(function () { bloque.classList.remove("revelar", "visible"); }, 1650);
+                return;
+            }
             observador.observe(bloque);
         });
     }
@@ -159,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Contraseña: la ayuda "Mínimo N caracteres" se pone en verde al cumplirse
     document.querySelectorAll("[data-password-min]").forEach(function (campo) {
-        var ayuda = campo.parentNode.querySelector(".ayuda");
+        var ayuda = (campo.closest(".campo") || campo.parentNode).querySelector(".ayuda");
         if (!ayuda) {
             return;
         }
@@ -183,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var aviso = document.createElement("span");
         aviso.className = "ayuda coincide";
         aviso.setAttribute("aria-live", "polite"); // se anuncia cuando aparece el texto
-        campo.parentNode.appendChild(aviso);
+        (campo.closest(".campo") || campo.parentNode).appendChild(aviso);
 
         function comparar() {
             var coinciden = campo.value !== "" && campo.value === otro.value;

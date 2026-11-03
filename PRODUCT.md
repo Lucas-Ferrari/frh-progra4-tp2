@@ -9,7 +9,7 @@ web
 ## Users
 Primary audience: the professors grading this Programación IV integrator project. They review it on XAMPP or the Railway deploy, walk each role's flows, and check that features work and read clearly.
 
-The site simulates a fictional bank, Banco Andino, with four roles: visitors (bank info, sign-up, contact), clientes (accounts, movements with search, transfers, editing their email), operadores (create clients, search clients, record deposits and withdrawals), and administradores (summary panel and CRUD for accounts, movements, users and enquiries).
+The site simulates a fictional bank, Future Bank, with four roles: visitors (bank info, sign-up, contact), clientes (accounts, movements with search, transfers, editing their email), operadores (create clients, search clients, record deposits and withdrawals), and administradores (summary panel and CRUD for accounts, movements, users and enquiries).
 
 ## Product Purpose
 To show a complete, working banking site in PHP + MySQL + HTML/CSS/JS with no frameworks. Success means a grader can find and finish every role's flow without confusion, and the interface looks deliberate and coherent.
