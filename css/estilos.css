@@ -466,38 +466,135 @@ code {
 .grilla .tarjeta { margin-bottom: 0; }
 
 /* ---------- Sobre nosotros ---------- */
-.integrante { text-align: center; }
-.integrante h2 { font-size: 1.15rem; margin-bottom: 4px; }
-.integrante-rol { color: var(--marca-texto); font-weight: 600; }
-
-.integrante-avatar,
-.esqueleto-avatar {
-    width: 72px;
-    height: 72px;
-    margin: 0 auto 16px;
-    border-radius: 50%;
+/* Foto de la sucursal fija detrás de toda la página, desenfocada y con velo
+   para que no compita con las tarjetas. */
+.fondo-sucursal {
+    position: fixed;
+    inset: -24px; /* el blur deja bordes transparentes: se agranda para taparlos */
+    z-index: -1;
+    background:
+        linear-gradient(160deg, rgba(21, 12, 60, 0.78), rgba(90, 46, 229, 0.45)),
+        url("../img/SucursalCorrientes.jpg") center / cover;
+    filter: blur(6px);
 }
 
-.integrante-avatar {
-    display: grid;
-    place-items: center;
+.hero-equipo { margin-bottom: 32px; padding: 24px 0 8px; }
+.hero-equipo h1 { color: #fff; margin-bottom: 8px; }
+.intro-equipo { color: rgba(255, 255, 255, 0.85); margin: 0; }
+
+.grilla-equipo {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 760px) {
+    .grilla-equipo { grid-template-columns: 1fr; }
+}
+
+.integrante {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 32px;
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+
+/* Halo de marca en la esquina de la foto */
+.integrante::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 140px;
+    background: radial-gradient(90% 100% at 0% 0%, var(--marca-suave), transparent 70%);
+    pointer-events: none;
+}
+
+.integrante > * { position: relative; margin: 0; }
+.integrante:hover { transform: translateY(-4px); box-shadow: var(--sombra-alta); }
+
+.integrante-cabecera { display: flex; align-items: center; gap: 20px; }
+
+.integrante-foto {
+    flex: none;
+    width: 120px;
+    height: 120px;
+    padding: 3px;
+    border-radius: 50%;
+    background: conic-gradient(from 210deg, var(--marca), #22d3ee, var(--marca));
+}
+
+.integrante-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--superficie);
+    display: block;
+}
+
+.integrante h2 { font-size: 1.35rem; margin-bottom: 8px; }
+
+.integrante-rol {
+    display: inline-block;
+    margin: 0;
+    padding: 4px 12px;
+    border-radius: 999px;
     background: var(--marca-suave);
     color: var(--marca-texto);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.integrante-bio { color: var(--texto-suave); }
+
+.integrante-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0;
+    list-style: none;
+}
+
+.integrante-stack li {
+    padding: 4px 10px;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.integrante-dato { display: flex; align-items: baseline; gap: 10px; }
+.integrante-dato strong {
     font-size: 1.75rem;
     font-weight: 800;
+    color: var(--marca-texto);
+    letter-spacing: -0.02em;
+}
+.integrante-dato span { color: var(--texto-suave); font-size: 0.9rem; }
+
+.integrante-frase {
+    margin-top: auto !important; /* las 4 frases quedan alineadas abajo */
+    padding: 12px 14px;
+    border-radius: var(--radio-chico);
+    background: var(--superficie-2);
+    border: 1px dashed var(--borde);
+    color: var(--texto-suave);
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 0.85rem;
 }
 
-/* Esqueleto de carga mientras no hay datos del equipo */
-.esqueleto { background: var(--gris-fondo); border-radius: var(--radio-chico); }
-.esqueleto-avatar { border-radius: 50%; }
-.esqueleto-linea { height: 12px; margin: 0 auto 10px; }
+.integrante-frase::before { content: "// "; color: var(--marca-texto); }
 
-@media (prefers-reduced-motion: no-preference) {
-    .esqueleto { animation: esqueleto-latir 1.6s ease-in-out infinite; }
+@media (max-width: 480px) {
+    .integrante { padding: 24px; }
+    .integrante-cabecera { flex-direction: column; text-align: center; }
 }
 
-@keyframes esqueleto-latir {
-    50% { opacity: 0.5; }
+@media (prefers-reduced-motion: reduce) {
+    .integrante, .integrante:hover { transition: none; transform: none; }
 }
 
 .estadistica .valor {
