@@ -178,23 +178,24 @@ $descuentos = array_values(array_filter($descuentos, function ($d) {
     return rutaLogoDescuento($d) !== null;
 }));
 
-function logoDescuento($d)
+// $alt: en la tarjeta el logo ES el nombre del comercio (no hay texto que lo repita),
+// así que lleva alt. En el modal va vacío porque el <h3> ya dice el nombre.
+function logoDescuento($d, $alt)
 {
-    // alt vacío: el nombre del comercio ya está escrito en la tarjeta (evita que el lector de pantalla lo repita)
-    return '<img src="' . e(rutaLogoDescuento($d)) . '" alt="" width="140" height="40" loading="lazy">';
+    return '<img src="' . e(rutaLogoDescuento($d)) . '" alt="' . e($alt) . '" width="160" height="44" loading="lazy">';
 }
 
 // Una tarjeta. $copia: el segundo juego del bucle infinito (oculto a lectores de pantalla y al Tab)
+// Orden de lectura: comercio (logo) → porcentaje → rubro → día.
 function tarjetaDescuento($d, $indice, $copia)
 {
     $extra = $copia ? ' tabindex="-1"' : '';
     return '<li' . ($copia ? ' aria-hidden="true"' : '') . '>
         <button type="button" class="descuento" data-promo="' . $indice . '"' . $extra . '>
-            <span class="descuento-logo">' . logoDescuento($d) . '</span>
-            <span class="descuento-dia">' . e($d["dia"]) . '</span>
-            <span class="descuento-porcentaje">' . e($d["porcentaje"]) . '%</span>
-            <span class="descuento-comercio">' . e($d["comercio"]) . '</span>
+            <span class="descuento-logo">' . logoDescuento($d, $d["comercio"]) . '</span>
+            <span class="descuento-porcentaje">' . e($d["porcentaje"]) . '<span class="descuento-signo">%</span></span>
             <span class="descuento-rubro">' . e($d["rubro"]) . '</span>
+            <span class="descuento-dia">' . e($d["dia"]) . '</span>
         </button>
     </li>';
 }
@@ -240,7 +241,7 @@ function tarjetaDescuento($d, $indice, $copia)
         return ["comercio" => $d["comercio"], "rubro" => $d["rubro"], "porcentaje" => $d["porcentaje"],
             // "Todos los lunes / sábados": los días que no terminan en s suman una
             "dia" => mb_strtolower($d["dia"]) . (substr($d["dia"], -1) === "s" ? "" : "s"),
-            "tope" => number_format($d["tope"], 0, ",", "."), "logo" => logoDescuento($d)];
+            "tope" => number_format($d["tope"], 0, ",", "."), "logo" => logoDescuento($d, "")];
     }, $descuentos), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG); ?>;</script>
 </section>
 
