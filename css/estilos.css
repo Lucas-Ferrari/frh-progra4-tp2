@@ -2804,48 +2804,66 @@ html:not(.js) .app .contenido > .acceso:first-child {
 
 
 /* =====================================================================
-   Panel del cliente: cuentas compactas + últimos movimientos
-   Cada cuenta es una fila clickeable (lleva a sus movimientos): moneda,
-   tipo y número a la izquierda, saldo a la derecha. Al lado, una lista
-   con los últimos 5 movimientos de todas las cuentas mezclados.
+   Panel del cliente: tarjetas de cuenta grandes arriba, últimos 5
+   movimientos debajo. Cada tarjeta entera lleva a sus movimientos.
+   El fondo lleva manchas violetas difuminadas para que los huecos
+   no se sientan vacíos.
    ===================================================================== */
-.panel-cliente {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-    gap: 32px;
-    align-items: start;
+body.app:has(.panel-cliente) {
+    background:
+        radial-gradient(60vw 50vh at 85% -10%, color-mix(in srgb, var(--marca) 22%, transparent), transparent 70%),
+        radial-gradient(50vw 45vh at -10% 60%, color-mix(in srgb, var(--marca) 14%, transparent), transparent 70%),
+        var(--fondo);
+    background-attachment: fixed;
 }
+
+.panel-cliente { display: flex; flex-direction: column; gap: 36px; }
 
 .panel-cliente > section > h2 { margin-top: 0; }
 
 .cuentas {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
 }
 
 .cuenta {
+    position: relative;
+    overflow: hidden;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+        "moneda datos"
+        "saldo  saldo"
+        "ir     ir";
     align-items: center;
     gap: 14px;
-    padding: 16px 18px;
+    min-height: 200px;
+    padding: 24px;
     border: 1px solid var(--borde);
-    border-radius: 14px;
-    background: var(--superficie);
+    border-radius: 20px;
+    background:
+        radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--marca) 18%, transparent), transparent 60%),
+        var(--superficie);
     color: var(--texto);
     text-decoration: none;
-    transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+    box-shadow: 0 10px 30px -18px color-mix(in srgb, var(--marca) 60%, transparent);
+    transition: border-color 0.2s var(--ease), transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
 
-.cuenta:hover { border-color: var(--marca); }
+.cuenta:hover {
+    border-color: var(--marca);
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px -20px color-mix(in srgb, var(--marca) 80%, transparent);
+}
 .cuenta:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
 
 .cuenta-moneda {
+    grid-area: moneda;
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border-radius: 12px;
     background: var(--marca-suave);
     color: var(--marca-texto);
@@ -2857,6 +2875,8 @@ html:not(.js) .app .contenido > .acceso:first-child {
 .cuenta-datos,
 .cuenta-saldo { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 
+.cuenta-datos { grid-area: datos; }
+
 .cuenta-tipo { font-weight: 600; color: var(--titulos); font-size: 0.95rem; }
 
 .cuenta-numero {
@@ -2865,19 +2885,21 @@ html:not(.js) .app .contenido > .acceso:first-child {
     font-variant-numeric: tabular-nums;
 }
 
-.cuenta-saldo { align-items: flex-end; text-align: right; }
+.cuenta-saldo { grid-area: saldo; align-self: end; }
 
 .cuenta .monto {
-    font-size: 1.2rem;
+    font-size: clamp(1.6rem, 2.4vw, 2rem);
     font-weight: 800;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
     color: var(--titulos);
     white-space: nowrap;
 }
 
-.cuenta-saldo .texto-suave { font-size: 0.75rem; }
+.cuenta-saldo .texto-suave { font-size: 0.8rem; }
 
 .cuenta-ir {
+    grid-area: ir;
+    justify-self: end;
     color: var(--texto-suave);
     transition: transform 0.2s var(--ease), color 0.2s var(--ease);
 }
@@ -2931,14 +2953,8 @@ html:not(.js) .app .contenido > .acceso:first-child {
     white-space: nowrap;
 }
 
-@media (max-width: 900px) {
-    .panel-cliente { grid-template-columns: 1fr; gap: 8px; }
-    .panel-cliente > section + section > h2 { margin-top: 28px; }
-}
-
 @media (max-width: 420px) {
-    .cuenta { grid-template-columns: auto minmax(0, 1fr) auto; padding: 14px; gap: 12px; }
-    .cuenta-ir { display: none; }
-    .cuenta .monto { font-size: 1.05rem; }
+    .cuenta { min-height: 0; padding: 18px; gap: 12px; }
+    .cuenta .monto { font-size: 1.5rem; }
     .lista-movimientos li { padding: 12px 14px; gap: 12px; }
 }
