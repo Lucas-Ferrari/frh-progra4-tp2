@@ -37,6 +37,7 @@ require_once(__DIR__ . "/../includes/header.php");
 
 ?>
 
+<div class="acceso acceso-orbes">
 <section class="tarjeta formulario formulario-centrado">
     <h1><?php echo e($titulo); ?></h1>
 
@@ -95,5 +96,6 @@ require_once(__DIR__ . "/../includes/header.php");
         </div>
     </form>
 </section>
+</div>
 
 <?php require_once(__DIR__ . "/../includes/footer.php"); ?>
