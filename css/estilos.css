@@ -2980,3 +2980,17 @@ body.app:has(.panel-cliente) {
     border-radius: 14px;
     box-shadow: none;
 }
+
+/* Resto de los formularios con el mismo escenario del login: la tarjeta
+   ocupa su ancho máximo dentro del grid centrado */
+.app .acceso > .formulario-centrado { width: 100%; }
+
+/* Formularios del panel: en vez de la foto, orbes violetas difuminados
+   sobre el fondo del tema (la foto queda solo para login y contraseñas) */
+.app .acceso-orbes::before {
+    background:
+        radial-gradient(circle at 18% 28%, rgba(123, 60, 240, 0.35), transparent 32%),
+        radial-gradient(circle at 82% 22%, rgba(61, 140, 255, 0.22), transparent 30%),
+        radial-gradient(circle at 70% 82%, rgba(91, 46, 229, 0.28), transparent 34%),
+        var(--fondo);
+}

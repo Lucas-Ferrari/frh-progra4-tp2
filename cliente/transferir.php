@@ -18,6 +18,7 @@ require_once(__DIR__ . "/../includes/header.php");
 
 ?>
 
+<div class="acceso acceso-orbes">
 <section class="tarjeta formulario formulario-centrado">
     <h1>Transferir</h1>
     <p class="texto-suave">Transferí entre tus cuentas o a cualquier cuenta de Future Bank en la misma moneda.</p>
@@ -65,5 +66,6 @@ require_once(__DIR__ . "/../includes/header.php");
         </form>
     <?php endif; ?>
 </section>
+</div>
 
 <?php require_once(__DIR__ . "/../includes/footer.php"); ?>
