@@ -79,7 +79,7 @@ CREATE TABLE plazos_fijos (
     id_plazo_fijo INT AUTO_INCREMENT PRIMARY KEY,
     id_cuenta INT NOT NULL,
     capital DECIMAL(12,2) NOT NULL,
-    tna DECIMAL(5,2) NOT NULL,                  -- tasa nominal anual en %, ej. 32.00
+    tna DECIMAL(5,2) NOT NULL,                  -- tasa nominal anual en %, ej. 20.00
     dias SMALLINT NOT NULL,
     interes DECIMAL(12,2) NOT NULL,
     fecha_alta DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -191,16 +191,16 @@ INSERT INTO movimientos (id_cuenta, fecha, tipo, monto, descripcion) VALUES
 -- ---------------------------------------------------------------------
 INSERT INTO movimientos (id_cuenta, fecha, tipo, monto, descripcion) VALUES
 (1, '2025-03-10 10:00:00',          'Plazo fijo',  -50000.00, 'Constitución de plazo fijo a 30 días'),
-(1, '2025-04-09 10:00:00',          'Plazo fijo',   51315.07, 'Acreditación de plazo fijo (capital + interés)'),
+(1, '2025-04-09 10:00:00',          'Plazo fijo',   50821.92, 'Acreditación de plazo fijo (capital + interés)'),
 (1, NOW() - INTERVAL 35 DAY,        'Plazo fijo', -100000.00, 'Constitución de plazo fijo a 30 días'),
 (1, NOW() - INTERVAL 10 DAY,        'Plazo fijo', -200000.00, 'Constitución de plazo fijo a 30 días'),
 (1, NOW() - INTERVAL 15 DAY,        'Reserva',    -120000.00, 'Ingreso a reserva "Vacaciones"'),
 (2, NOW() - INTERVAL 15 DAY,        'Reserva',       -200.00, 'Ingreso a reserva "Ahorro en dólares"');
 
 INSERT INTO plazos_fijos (id_cuenta, capital, tna, dias, interes, fecha_alta, fecha_vencimiento, estado, fecha_acreditacion) VALUES
-(1,  50000.00, 32.00, 30, 1315.07, '2025-03-10 10:00:00',   '2025-04-09 10:00:00',  'Acreditado', '2025-04-09 10:00:00'),
-(1, 100000.00, 32.00, 30, 2630.14, NOW() - INTERVAL 35 DAY, NOW() - INTERVAL 5 DAY, 'Activo', NULL),
-(1, 200000.00, 32.00, 30, 5260.27, NOW() - INTERVAL 10 DAY, NOW() + INTERVAL 20 DAY, 'Activo', NULL);
+(1,  50000.00, 20.00, 30, 821.92, '2025-03-10 10:00:00',   '2025-04-09 10:00:00',  'Acreditado', '2025-04-09 10:00:00'),
+(1, 100000.00, 20.00, 30, 1643.84, NOW() - INTERVAL 35 DAY, NOW() - INTERVAL 5 DAY, 'Activo', NULL),
+(1, 200000.00, 20.00, 30, 3287.67, NOW() - INTERVAL 10 DAY, NOW() + INTERVAL 20 DAY, 'Activo', NULL);
 
 INSERT INTO reservas (id_cuenta, nombre, meta, saldo, rendimientos, fecha_creacion, fecha_calculo) VALUES
 (1, 'Vacaciones',        300000.00, 120000.00, 0, NOW() - INTERVAL 15 DAY, NOW() - INTERVAL 15 DAY),

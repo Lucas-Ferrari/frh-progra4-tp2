@@ -11,8 +11,8 @@ require_once(__DIR__ . "/funciones.php");
 // Están acá y no en la base para que el TP sea simple de leer; si el banco
 // necesitara cambiarlas seguido, pasarían a una tabla de configuración.
 // ---------------------------------------------------------------------
-const TNA_PLAZO_FIJO = ["ARS" => 32.00, "USD" => 2.00];
-const TNA_RESERVA = ["ARS" => 28.00, "USD" => 1.50];
+const TNA_PLAZO_FIJO = ["ARS" => 20.00, "USD" => 2.00];
+const TNA_RESERVA = ["ARS" => 24.00, "USD" => 1.50];
 const PLAZO_FIJO_DIAS = [30, 60, 90, 180];
 const PLAZO_FIJO_MINIMO = ["ARS" => 1000, "USD" => 100];
 const RESERVA_NOMBRE_MAXIMO = 40;

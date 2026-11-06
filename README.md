@@ -73,9 +73,9 @@ Si el rol no coincide con el acceso elegido, el login se rechaza.
 Desde **Mi panel → Ahorro e inversiones** el cliente entra a:
 
 - **Reservas** (`cliente/reservas.php`): plata separada del saldo, con nombre y meta opcional, que rinde todos los días
-  (28% TNA en pesos, 1,5% en dólares) y se puede ingresar, retirar o cerrar en cualquier momento.
+  (24% TNA en pesos, 1,5% en dólares) y se puede ingresar, retirar o cerrar en cualquier momento.
 - **Plazo fijo** (`cliente/plazos_fijos.php`): a 30, 60, 90 o 180 días, con simulador del total a cobrar
-  (32% TNA en pesos, 2% en dólares; mínimo $ 1.000 o US$ 100).
+  (20% TNA en pesos, 2% en dólares; mínimo $ 1.000 o US$ 100).
 
 Cómo funciona por dentro (`includes/inversiones.php`):
 
