@@ -1867,60 +1867,6 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
     color: #a9a5ba;
 }
 
-/* Panel del cliente: una tarjeta por cuenta */
-.cuentas {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-}
-
-.cuenta {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 24px;
-    border-radius: var(--radio);
-    background: var(--superficie);
-    transition: transform 0.35s var(--ease);
-}
-
-.cuenta:hover { transform: translateY(-3px); }
-
-.cuenta-tipo { font-weight: 700; color: var(--titulos); }
-
-.cuenta-numero {
-    color: var(--texto-suave);
-    font-size: 0.85rem;
-    font-variant-numeric: tabular-nums; /* números alineados, sin fuente monoespaciada */
-}
-
-/* El saldo es lo más importante de la tarjeta: va grande */
-.cuenta .monto {
-    margin-top: 18px;
-    font-size: 1.75rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: var(--titulos);
-    font-variant-numeric: tabular-nums;
-}
-
-.cuenta-pie {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-top: 18px;
-    padding-top: 14px;
-    font-size: 0.875rem;
-    color: var(--texto-suave);
-}
-
-.cuenta-pie a { font-weight: 700; }
-
-/* Fecha y link entran en una línea cada uno, sin partirse */
-.cuenta-pie > * { white-space: nowrap; }
-
 @media (max-width: 860px) {
     /* En celular: logo, botón de tema y hamburguesa en una fila */
     .boton-tema { margin-left: auto; order: 1; }
@@ -2096,19 +2042,20 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
 
 .carrusel::-webkit-scrollbar { display: none; }
 
+/* Tarjeta tipo cupón, todo centrado: arriba la marca, abajo la oferta.
+   El nombre del comercio no se escribe: el logo ya lo dice (y lleva alt). */
 .descuento {
     width: 220px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    padding: 22px;
+    align-items: center;
+    padding: 20px 20px 22px;
     border: 0;
     border-radius: var(--radio);
     background: var(--superficie);
     color: var(--texto);
     font: inherit;
-    text-align: left;
+    text-align: center;
     cursor: pointer;
     transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
@@ -2120,45 +2067,42 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
     box-shadow: 0 18px 40px -16px rgba(21, 19, 31, 0.45);
 }
 
-/* Placa blanca apaisada para el logo: los isotipos cuadrados (Carrefour, Shell)
-   y los logotipos horizontales (Cinemark, Coto) entran en la misma caja con
-   object-fit: contain. Blanca siempre: los logos están pensados para fondo blanco */
+/* Logo sin placa: los archivos tienen fondo transparente y colores que se leen
+   en modo claro y oscuro, así que apoyan directo sobre la tarjeta.
+   Caja fija de 150 × 44 centrada: los isotipos (Shell, M!) y los logotipos
+   anchos (Cinemark, Coto) quedan a la misma altura y el carrusel mantiene el ritmo.
+   La línea punteada separa marca y oferta, como el troquel de un cupón. */
 .descuento-logo {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     align-self: stretch;
+    height: 44px;
+    box-sizing: content-box;
+    padding-bottom: 18px;
+    border-bottom: 1px dashed var(--borde);
 }
 
-.descuento-logo img,
-.descuento-iniciales {
-    display: grid;
-    place-items: center;
-    box-sizing: border-box;
-    width: 100%;
-    height: 64px;
-    padding: 12px 16px;
-    border: 1px solid var(--borde);
-    border-radius: 12px;
+.descuento-logo img {
+    display: block;
+    width: 150px;
+    max-width: 100%;
+    height: 100%;
     object-fit: contain;
-    background: #ffffff;
 }
 
-.promo-modal .descuento-logo { max-width: 220px; }
-
-.descuento-iniciales { color: #ffffff; font-weight: 800; font-size: 1.1rem; }
-
-.descuento-dia {
-    margin-top: 14px;
-    padding: 4px 10px;
-    border-radius: 99px;
-    background: var(--marca-suave);
-    color: var(--marca-texto);
-    font-size: 0.8rem;
-    font-weight: 700;
+/* En el modal el logo es protagonista: más grande, alineado con el texto y sin troquel */
+.promo-modal .descuento-logo {
+    justify-content: flex-start;
+    height: 56px;
+    padding-bottom: 0;
+    border-bottom: 0;
 }
+.promo-modal .descuento-logo img { width: 200px; object-position: left center; }
 
+/* El número es la oferta: grande y con el % más chico arriba,
+   así "50" se lee primero y el signo no compite con él */
 .descuento-porcentaje {
-    margin-top: 10px;
-    font-size: 3rem;
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.04em;
@@ -2166,8 +2110,37 @@ a:not(.boton):not(.logo):hover { text-decoration-thickness: 3px; }
     font-variant-numeric: tabular-nums;
 }
 
-.descuento-comercio { margin-top: 8px; font-weight: 700; font-size: 1.1rem; color: var(--titulos); }
-.descuento-rubro { color: var(--texto-suave); font-size: 0.9rem; }
+.descuento .descuento-porcentaje {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 18px;
+    font-size: 4rem;
+}
+
+.descuento-signo {
+    margin: 0.12em 0 0 0.04em;
+    font-size: 0.5em;
+    letter-spacing: 0;
+}
+
+.descuento-rubro {
+    margin-top: 8px;
+    color: var(--texto-suave);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.descuento-dia {
+    margin-top: 14px;
+    padding: 5px 12px;
+    border-radius: 99px;
+    background: var(--marca-suave);
+    color: var(--marca-texto);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
 
 /* Modal con el detalle */
 .promo-modal {
@@ -2493,7 +2466,6 @@ img.acceso-logo { object-fit: contain; padding: 0; border: 0; border-radius: 0; 
 
 /* ---------- Superficies ---------- */
 .app .tarjeta,
-.app .cuenta,
 .app .menu-panel a {
     border: 1px solid var(--borde);
     border-radius: 14px;
@@ -2504,7 +2476,6 @@ img.acceso-logo { object-fit: contain; padding: 0; border: 0; border-radius: 0; 
 
 /* Nada salta al pasar el mouse: en una herramienta de trabajo distrae */
 .app .estadistica:hover,
-.app .cuenta:hover,
 .app .menu-panel a:hover { transform: none; }
 
 /* Botones: menos píldora, más producto */
@@ -2549,16 +2520,6 @@ img.acceso-logo { object-fit: contain; padding: 0; border: 0; border-radius: 0; 
 
 .app .menu-panel a:hover { background: var(--superficie); border-color: var(--marca); }
 .app .menu-panel a:hover::after { color: var(--marca-texto); transform: translateX(3px); }
-
-/* ---------- Cuentas del cliente ---------- */
-.app .cuentas { gap: 12px; }
-.app .cuenta { padding: 22px; }
-.app .cuenta-tipo { font-size: 0.95rem; }
-.app .cuenta .monto { margin-top: 22px; font-size: clamp(1.6rem, 2.4vw, 2rem); }
-.app .cuenta .monto + .texto-suave { font-size: 0.85rem; }
-.app .cuenta-pie { border-top: 1px solid var(--borde); margin-top: 20px; }
-.app .cuenta-pie a { text-decoration: none; }
-.app .cuenta-pie a::after { content: " →"; }
 
 /* ---------- Tablas ---------- */
 .app .tarjeta:has(> .tabla-contenedor),
@@ -2640,7 +2601,6 @@ img.acceso-logo { object-fit: contain; padding: 0; border: 0; border-radius: 0; 
 
 /* Montos grandes con cifras proporcionales: las tabulares de esta fuente
    separan demasiado los dígitos fuera de una columna */
-.app .cuenta .monto,
 .app .estadistica .valor { font-variant-numeric: proportional-nums; letter-spacing: -0.03em; }
 
 /* "Salir" no compite con la acción principal de la página */
@@ -2725,8 +2685,7 @@ img.acceso-logo { object-fit: contain; padding: 0; border: 0; border-radius: 0; 
 }
 
 /* =====================================================================
-   Login y registro dentro del estilo de producto: tarjeta sólida sobre
-   el fondo, sin escenario con brillo ni vidrio esmerilado
+   Login y registro: foto de fondo con la tarjeta de vidrio violeta
    ===================================================================== */
 /* Escenario: foto de la sucursal a todo el ancho, con un velo oscuro
    para que la tarjeta se lea bien encima de cualquier zona de la foto */
@@ -2753,30 +2712,7 @@ html:not(.js) .app .contenido > .acceso:first-child {
     margin-top: -40px;
 }
 
-.app .acceso-tarjeta {
-    --titulos: inherit;
-    --texto: inherit;
-    --texto-suave: inherit;
-    padding: 36px 32px 28px;
-    border: 1px solid var(--borde);
-    border-radius: 16px;
-    background: var(--superficie);
-    backdrop-filter: none;
-    box-shadow: none;
-}
 
-.app .acceso h1 { color: var(--titulos); }
-
-.app .acceso .entrada input {
-    border: 1px solid var(--borde);
-    border-radius: 10px;
-    background: var(--superficie-2);
-    color: var(--texto);
-}
-
-.app .acceso .entrada input:focus { background: var(--superficie); border-color: var(--marca); }
-.app .acceso .entrada input::placeholder { color: var(--placeholder); }
-.app .acceso .entrada input[type="date"] { color-scheme: inherit; }
 .app .entrada > svg,
 .app .entrada-prefijo,
 .app .ver-password { color: var(--texto-suave); }
@@ -2784,22 +2720,6 @@ html:not(.js) .app .contenido > .acceso:first-child {
 .app .ver-password:hover,
 .app .ver-password[aria-pressed="true"] { color: var(--marca-texto); }
 
-.app .acceso-tipo { background: var(--superficie-2); box-shadow: inset 0 0 0 1px var(--borde); }
-.app .acceso-tipo label:has(input:checked) {
-    background: var(--superficie);
-    color: var(--titulos);
-    box-shadow: 0 0 0 1px var(--borde);
-}
-.app .acceso-tipo label:has(input:focus-visible) { outline-color: var(--marca); }
-
-.app .acceso-boton { background: var(--marca); color: #ffffff; }
-.app .acceso-boton:hover { background: var(--marca-oscura); }
-
-.app .acceso-pie a { color: var(--marca-texto); }
-.app .acceso :focus-visible { outline-color: var(--marca); }
-.app .acceso .campo-error .entrada input { border-color: var(--error-texto); }
-.app .acceso .error-campo { color: var(--error-texto); }
-.app .acceso .ayuda.cumple { color: var(--exito-texto); }
 
 /* =====================================================================
    Portada: ritmo de bloques
@@ -2833,7 +2753,6 @@ html:not(.js) .app .contenido > .acceso:first-child {
    Sin la curva de crecimiento: sobre saldos y totales reales sugeriría
    una tendencia que los datos no muestran.
    ===================================================================== */
-.app .cuenta,
 .app .estadistica {
     /* Tokens claros adentro: textos, bordes y links se adaptan solos */
     --titulos: #ffffff;
@@ -2847,44 +2766,6 @@ html:not(.js) .app .contenido > .acceso:first-child {
     box-shadow: var(--sombra-destacada);
     color: var(--texto);
 }
-
-/* Tipo de cuenta en chip, como la etiqueta "Destacado" */
-.app .cuenta-tipo {
-    align-self: flex-start;
-    margin-bottom: 10px;
-    padding: 5px 10px;
-    border-radius: 99px;
-    border: 1px solid rgba(168, 139, 255, 0.35);
-    background: rgba(138, 99, 255, 0.14);
-    color: var(--marca-texto);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-/* El saldo es el 32% de esta tarjeta */
-.app .cuenta .monto {
-    margin-top: 28px;
-    font-size: clamp(2rem, 3.2vw, 2.6rem);
-    line-height: 1.05;
-    letter-spacing: -0.04em;
-}
-
-.app .cuenta-pie a { color: #ffffff; }
-.app .cuenta-pie a::after { content: none; }
-.app .cuenta-pie a {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-.app .cuenta-pie a::before {
-    content: "→";
-    order: 2;
-    transition: transform 0.2s var(--ease);
-}
-.app .cuenta-pie a:hover::before { transform: translateX(3px); }
-.app .cuenta :focus-visible { outline-color: #ffffff; }
 
 /* Estadísticas: etiqueta chica en mayúsculas arriba, número grande abajo */
 .app .estadistica { padding: 22px 24px; gap: 14px; }
@@ -2908,3 +2789,208 @@ html:not(.js) .app .contenido > .acceso:first-child {
     .app .estadistica .valor { font-size: 1.4rem; }
 }
 
+
+/* =====================================================================
+   Panel del cliente: tarjetas de cuenta grandes arriba, últimos 5
+   movimientos debajo. Cada tarjeta entera lleva a sus movimientos.
+   El fondo lleva manchas violetas difuminadas para que los huecos
+   no se sientan vacíos.
+   ===================================================================== */
+body.app:has(.panel-cliente) {
+    background:
+        radial-gradient(60vw 50vh at 85% -10%, color-mix(in srgb, var(--marca) 22%, transparent), transparent 70%),
+        radial-gradient(50vw 45vh at -10% 60%, color-mix(in srgb, var(--marca) 14%, transparent), transparent 70%),
+        var(--fondo);
+    background-attachment: fixed;
+}
+
+.panel-cliente { display: flex; flex-direction: column; gap: 36px; }
+
+.panel-cliente > section > h2 { margin-top: 0; }
+
+.cuentas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+}
+
+.cuenta {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+        "moneda datos"
+        "saldo  saldo"
+        "ir     ir";
+    align-items: center;
+    gap: 14px;
+    min-height: 200px;
+    padding: 24px;
+    border: 1px solid var(--borde);
+    border-radius: 20px;
+    background:
+        radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--marca) 18%, transparent), transparent 60%),
+        var(--superficie);
+    color: var(--texto);
+    text-decoration: none;
+    box-shadow: 0 10px 30px -18px color-mix(in srgb, var(--marca) 60%, transparent);
+    transition: border-color 0.2s var(--ease), transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.cuenta:hover {
+    border-color: var(--marca);
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px -20px color-mix(in srgb, var(--marca) 80%, transparent);
+}
+.cuenta:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
+
+.cuenta-moneda {
+    grid-area: moneda;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--marca-suave);
+    color: var(--marca-texto);
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.cuenta-datos,
+.cuenta-saldo { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+.cuenta-datos { grid-area: datos; }
+
+.cuenta-tipo { font-weight: 600; color: var(--titulos); font-size: 0.95rem; }
+
+.cuenta-numero {
+    color: var(--texto-suave);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.cuenta-saldo { grid-area: saldo; align-self: end; }
+
+.cuenta .monto {
+    font-size: clamp(1.6rem, 2.4vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--titulos);
+    white-space: nowrap;
+}
+
+.cuenta-saldo .texto-suave { font-size: 0.8rem; }
+
+.cuenta-ir {
+    grid-area: ir;
+    justify-self: end;
+    color: var(--texto-suave);
+    transition: transform 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.cuenta:hover .cuenta-ir { color: var(--marca-texto); transform: translateX(3px); }
+
+/* Últimos movimientos: lista con ícono de entrada/salida */
+.app .tarjeta.ultimos-movimientos { padding: 6px 0; }
+.ultimos-movimientos .vacio { margin: 0; padding: 24px; }
+
+.lista-movimientos { list-style: none; margin: 0; padding: 0; }
+
+.lista-movimientos li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+}
+
+.lista-movimientos li + li { border-top: 1px solid var(--borde); }
+
+.movimiento-icono {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-weight: 700;
+}
+
+.movimiento-icono.ingreso { background: var(--exito-fondo); color: var(--exito-texto); }
+.movimiento-icono.egreso { background: var(--gris-fondo); color: var(--titulos); }
+
+.movimiento-datos { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+.movimiento-descripcion {
+    color: var(--titulos);
+    font-weight: 500;
+    font-size: 0.925rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.movimiento-meta { color: var(--texto-suave); font-size: 0.78rem; }
+
+.movimiento-monto {
+    font-size: 0.925rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+    .cuenta { min-height: 0; padding: 18px; gap: 12px; }
+    .cuenta .monto { font-size: 1.5rem; }
+    .lista-movimientos li { padding: 12px 14px; gap: 12px; }
+}
+
+/* ---------- Panel admin: saldos grandes, conteos dentro de cada acceso ---------- */
+.app .grilla-saldos { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 24px; }
+.app .grilla-saldos .estadistica { padding: 32px; min-height: 150px; }
+.app .grilla-saldos .estadistica .valor { font-size: clamp(2rem, 3.4vw, 2.75rem); }
+.menu-panel .dato { display: block; font-size: 1.5rem; font-weight: 800; color: var(--titulos); margin-bottom: 6px; }
+.menu-panel .aviso {
+    display: inline-block;
+    min-width: 1.4em;
+    padding: 0 6px;
+    margin-left: 6px;
+    border-radius: 999px;
+    background: #e5484d;
+    color: #fff;
+    font-size: 0.75rem;
+    line-height: 1.4em;
+    text-align: center;
+    vertical-align: middle;
+}
+@media (max-width: 520px) { .app .grilla-saldos { grid-template-columns: 1fr; } }
+
+/* v2: los saldos del admin vuelven a la superficie clara del resto del panel,
+   sin el fondo destacado con brillo; una franja de marca los distingue */
+.app .grilla-saldos .estadistica {
+    --titulos: inherit;
+    --texto: inherit;
+    --texto-suave: inherit;
+    --borde: inherit;
+    --marca-texto: inherit;
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    border-left: 4px solid var(--marca);
+    border-radius: 14px;
+    box-shadow: none;
+}
+
+/* Resto de los formularios con el mismo escenario del login: la tarjeta
+   ocupa su ancho máximo dentro del grid centrado */
+.app .acceso > .formulario-centrado { width: 100%; }
+
+/* Formularios del panel: en vez de la foto, orbes violetas difuminados
+   sobre el fondo del tema (la foto queda solo para login y contraseñas) */
+.app .acceso-orbes::before {
+    background:
+        radial-gradient(circle at 18% 28%, rgba(123, 60, 240, 0.35), transparent 32%),
+        radial-gradient(circle at 82% 22%, rgba(61, 140, 255, 0.22), transparent 30%),
+        radial-gradient(circle at 70% 82%, rgba(91, 46, 229, 0.28), transparent 34%),
+        var(--fondo);
+}

@@ -28,33 +28,22 @@ require_once(__DIR__ . "/../includes/header.php");
 
 <h1>Panel de administración</h1>
 
-<section class="grilla">
-    <div class="tarjeta estadistica">
-        <span class="valor"><?php echo (int) $clientes["total"]; ?></span>
-        <span class="etiqueta">Clientes activos</span>
-    </div>
-    <div class="tarjeta estadistica">
-        <span class="valor"><?php echo (int) $cuentas["total"]; ?></span>
-        <span class="etiqueta">Cuentas activas</span>
-    </div>
+<!-- Solo los saldos van como tarjeta grande; los conteos viven en su acceso de gestión -->
+<section class="grilla grilla-saldos">
     <?php foreach ($saldos as $saldo): ?>
         <div class="tarjeta estadistica">
             <span class="valor"><?php echo e(formatoMonto($saldo["total"], $saldo["moneda"])); ?></span>
             <span class="etiqueta">Saldo total en <?php echo e($saldo["moneda"]); ?></span>
         </div>
     <?php endforeach; ?>
-    <div class="tarjeta estadistica">
-        <span class="valor"><?php echo (int) $sinLeer["total"]; ?></span>
-        <span class="etiqueta">Consultas sin leer</span>
-    </div>
 </section>
 
 <h2>Gestión</h2>
 <nav class="menu-panel">
-    <a href="cuentas.php"><strong>Cuentas</strong>Alta, modificación, baja y búsqueda de cuentas.</a>
+    <a href="cuentas.php"><strong>Cuentas</strong><span class="dato"><?php echo (int) $cuentas["total"]; ?> activas</span>Alta, modificación, baja y búsqueda de cuentas.</a>
     <a href="movimientos.php"><strong>Movimientos</strong>Depósitos, extracciones y corrección de movimientos.</a>
-    <a href="usuarios.php"><strong>Usuarios</strong>Clientes, operadores y administradores. Reseteo de contraseñas.</a>
-    <a href="contactos.php"><strong>Consultas</strong>Mensajes recibidos desde el formulario de contacto.</a>
+    <a href="usuarios.php"><strong>Usuarios</strong><span class="dato"><?php echo (int) $clientes["total"]; ?> clientes activos</span>Clientes, operadores y administradores. Reseteo de contraseñas.</a>
+    <a href="contactos.php"><strong>Consultas<?php if ($sinLeer["total"] > 0): ?> <span class="aviso" aria-label="<?php echo (int) $sinLeer["total"]; ?> sin leer"><?php echo (int) $sinLeer["total"]; ?></span><?php endif; ?></strong>Mensajes recibidos desde el formulario de contacto.</a>
 </nav>
 
 <h2>Últimos movimientos</h2>

@@ -146,43 +146,56 @@ require_once(__DIR__ . "/includes/header.php");
 <?php endif; ?>
 
 <?php
-// Promos de ejemplo: % y días inventados (el banco es ficticio). El logo se busca en
-// svg/<logo>.svg (o .png si la marca no publica vector); si no está, se muestran las iniciales en el color de la marca.
+// Promos de ejemplo: % y días inventados (el banco es ficticio).
+// Los logos están en img/descuentos/<logo>.svg (o .png si la marca no publica vector),
+// siempre con fondo transparente para que apoyen directo sobre la tarjeta en modo claro y oscuro.
 $descuentos = [
-    ["comercio" => "Carrefour", "logo" => "carrefour", "color" => "#004e9f", "rubro" => "Supermercados", "porcentaje" => 25, "dia" => "Miércoles", "tope" => 15000],
-    ["comercio" => "Coto", "logo" => "coto", "color" => "#e30613", "rubro" => "Supermercados", "porcentaje" => 20, "dia" => "Jueves", "tope" => 12000],
-    ["comercio" => "YPF", "logo" => "ypf", "color" => "#0033a0", "rubro" => "Combustible", "porcentaje" => 15, "dia" => "Lunes", "tope" => 8000],
-    ["comercio" => "Shell", "logo" => "shell", "color" => "#dd1d21", "rubro" => "Combustible", "porcentaje" => 15, "dia" => "Domingo", "tope" => 8000],
-    ["comercio" => "Farmacity", "logo" => "farmacity", "color" => "#0059a6", "rubro" => "Farmacias", "porcentaje" => 20, "dia" => "Martes", "tope" => 6000],
-    ["comercio" => "Cinemark Hoyts", "logo" => "cinemark", "color" => "#b5121b", "rubro" => "Entretenimiento", "porcentaje" => 50, "dia" => "Miércoles", "tope" => 5000],
-    ["comercio" => "Freddo", "logo" => "freddo", "color" => "#5b2c1d", "rubro" => "Gastronomía", "porcentaje" => 30, "dia" => "Viernes", "tope" => 4000],
-    ["comercio" => "Musimundo", "logo" => "musimundo", "color" => "#e4002b", "rubro" => "Tecnología", "porcentaje" => 15, "dia" => "Sábado", "tope" => 20000],
+    ["comercio" => "Carrefour", "logo" => "carrefour", "rubro" => "Supermercados", "porcentaje" => 25, "dia" => "Miércoles", "tope" => 15000],
+    ["comercio" => "Coto", "logo" => "coto", "rubro" => "Supermercados", "porcentaje" => 20, "dia" => "Jueves", "tope" => 12000],
+    ["comercio" => "YPF", "logo" => "ypf", "rubro" => "Combustible", "porcentaje" => 15, "dia" => "Lunes", "tope" => 8000],
+    ["comercio" => "Shell", "logo" => "shell", "rubro" => "Combustible", "porcentaje" => 15, "dia" => "Domingo", "tope" => 8000],
+    ["comercio" => "Farmacity", "logo" => "farmacity", "rubro" => "Farmacias", "porcentaje" => 20, "dia" => "Martes", "tope" => 6000],
+    ["comercio" => "Cinemark Hoyts", "logo" => "cinemark", "rubro" => "Entretenimiento", "porcentaje" => 50, "dia" => "Miércoles", "tope" => 5000],
+    ["comercio" => "Freddo", "logo" => "freddo", "rubro" => "Gastronomía", "porcentaje" => 30, "dia" => "Viernes", "tope" => 4000],
+    ["comercio" => "Musimundo", "logo" => "musimundo", "rubro" => "Tecnología", "porcentaje" => 15, "dia" => "Sábado", "tope" => 20000],
 ];
 
-function logoDescuento($d)
+// Devuelve la ruta del logo del comercio, o null si no hay archivo.
+function rutaLogoDescuento($d)
 {
     foreach (["svg", "png"] as $ext) {
-        $archivo = "svg/" . $d["logo"] . "." . $ext;
+        $archivo = "img/descuentos/" . $d["logo"] . "." . $ext;
         if (file_exists(__DIR__ . "/" . $archivo)) {
-            // alt vacío: el nombre del comercio ya está escrito en la tarjeta
-            return '<img src="' . e($archivo) . '" alt="" width="176" height="64" loading="lazy">';
+            return $archivo;
         }
     }
-    $iniciales = mb_substr($d["comercio"], 0, 2);
-    return '<span class="descuento-iniciales" style="background:' . e($d["color"]) . '">' . e($iniciales) . '</span>';
+    return null;
+}
+
+// Regla del diseño: un descuento sin logo no se muestra (una tarjeta con iniciales
+// se ve como un error). array_values reordena los índices para data-promo y PROMOS.
+$descuentos = array_values(array_filter($descuentos, function ($d) {
+    return rutaLogoDescuento($d) !== null;
+}));
+
+// $alt: en la tarjeta el logo ES el nombre del comercio (no hay texto que lo repita),
+// así que lleva alt. En el modal va vacío porque el <h3> ya dice el nombre.
+function logoDescuento($d, $alt)
+{
+    return '<img src="' . e(rutaLogoDescuento($d)) . '" alt="' . e($alt) . '" width="160" height="44" loading="lazy">';
 }
 
 // Una tarjeta. $copia: el segundo juego del bucle infinito (oculto a lectores de pantalla y al Tab)
+// Orden de lectura: comercio (logo) → porcentaje → rubro → día.
 function tarjetaDescuento($d, $indice, $copia)
 {
     $extra = $copia ? ' tabindex="-1"' : '';
     return '<li' . ($copia ? ' aria-hidden="true"' : '') . '>
         <button type="button" class="descuento" data-promo="' . $indice . '"' . $extra . '>
-            <span class="descuento-logo">' . logoDescuento($d) . '</span>
-            <span class="descuento-dia">' . e($d["dia"]) . '</span>
-            <span class="descuento-porcentaje">' . e($d["porcentaje"]) . '%</span>
-            <span class="descuento-comercio">' . e($d["comercio"]) . '</span>
+            <span class="descuento-logo">' . logoDescuento($d, $d["comercio"]) . '</span>
+            <span class="descuento-porcentaje">' . e($d["porcentaje"]) . '<span class="descuento-signo">%</span></span>
             <span class="descuento-rubro">' . e($d["rubro"]) . '</span>
+            <span class="descuento-dia">' . e($d["dia"]) . '</span>
         </button>
     </li>';
 }
@@ -228,7 +241,7 @@ function tarjetaDescuento($d, $indice, $copia)
         return ["comercio" => $d["comercio"], "rubro" => $d["rubro"], "porcentaje" => $d["porcentaje"],
             // "Todos los lunes / sábados": los días que no terminan en s suman una
             "dia" => mb_strtolower($d["dia"]) . (substr($d["dia"], -1) === "s" ? "" : "s"),
-            "tope" => number_format($d["tope"], 0, ",", "."), "logo" => logoDescuento($d)];
+            "tope" => number_format($d["tope"], 0, ",", "."), "logo" => logoDescuento($d, "")];
     }, $descuentos), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG); ?>;</script>
 </section>
 
