@@ -3,7 +3,7 @@
 Sitio web de un banco hecho en **PHP + MySQL + HTML/CSS/JavaScript** (sin frameworks).
 
 - Los visitantes ven la información del banco, pueden **registrarse** como clientes y enviar **consultas de contacto**.
-- Los **clientes** ven sus cuentas y movimientos (con buscador), transfieren dinero y editan su email.
+- Los **clientes** ven sus cuentas y movimientos (con buscador), transfieren dinero, editan su email y ahorran con **reservas** y **plazos fijos**.
 - Los **operadores** dan de alta clientes, buscan clientes y registran depósitos y extracciones.
 - Los **administradores** tienen un panel con resumen y ABMs de cuentas, movimientos, usuarios y consultas.
 
@@ -57,7 +57,7 @@ Todas las contraseñas de prueba son **`123456`**. En la base están guardadas h
 | Administrador | `admin@banco.local` | Empleados | |
 | Administrador | `admin2@banco.local` | Empleados | |
 | Operador | `operador@banco.local` | Empleados | |
-| Cliente | `diego@mail.com` | Clientes | 2 cuentas (ARS y USD) con varios movimientos |
+| Cliente | `diego@mail.com` | Clientes | 2 cuentas (ARS y USD) con varios movimientos, 2 reservas y plazos fijos (uno vencido que se acredita al entrar) |
 | Cliente | `elena@mail.com` | Clientes | 1 cuenta |
 | Cliente | `federico@mail.com` | Clientes | Cuenta corriente + caja de ahorro en USD |
 | Cliente | `gabriela@mail.com` | Clientes | **Debe cambiar la contraseña** al ingresar |
@@ -65,6 +65,32 @@ Todas las contraseñas de prueba son **`123456`**. En la base están guardadas h
 
 En el login se elige el **tipo de acceso**: *Clientes* (rol Cliente) o *Empleados* (roles Administrador y Operador).
 Si el rol no coincide con el acceso elegido, el login se rechaza.
+
+---
+
+## Reservas y plazo fijo
+
+Desde **Mi panel → Ahorro e inversiones** el cliente entra a:
+
+- **Reservas** (`cliente/reservas.php`): plata separada del saldo, con nombre y meta opcional, que rinde todos los días
+  (24% TNA en pesos, 1,5% en dólares) y se puede ingresar, retirar o cerrar en cualquier momento.
+- **Plazo fijo** (`cliente/plazos_fijos.php`): a 30, 60, 90 o 180 días, con simulador del total a cobrar
+  (20% TNA en pesos, 2% en dólares; mínimo $ 1.000 o US$ 100).
+
+Cómo funciona por dentro (`includes/inversiones.php`):
+
+- Cada vez que la plata entra o sale de una inversión se registra un movimiento (`Plazo fijo` o `Reserva`) en la cuenta,
+  dentro de una transacción. Así el saldo de la cuenta sigue siendo la suma de sus movimientos.
+- **Sin tareas programadas:** en XAMPP no hay un proceso que corra todos los días. Los plazos vencidos se acreditan y el
+  rendimiento de las reservas se suma **al abrir las pantallas** que muestran saldos (evaluación perezosa). El resultado es
+  el mismo que si se hubiera hecho exactamente al vencer.
+- El interés del plazo fijo se calcula en MySQL con `DECIMAL` (`capital × TNA × días / 36500`) y se guarda al constituirlo.
+- Las reservas rinden con interés compuesto diario y solo cuentan días completos.
+- Los movimientos de inversiones no se pueden editar ni borrar desde el panel de administración, y una cuenta con plata
+  invertida no se puede dar de baja.
+
+**Base ya creada (por ejemplo Railway):** correr `sql/migracion_inversiones.sql` una vez. Agrega las tablas y los tipos de
+movimiento sin borrar datos. En una instalación nueva alcanza con `sql/banco.sql`.
 
 ---
 

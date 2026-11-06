@@ -2,9 +2,13 @@
 
 require_once(__DIR__ . "/../includes/auth.php");
 require_once(__DIR__ . "/../includes/conexion.php");
+require_once(__DIR__ . "/../includes/inversiones.php");
 
 requerirPasswordActualizada();
 requerirRol([ROL_ADMIN]);
+
+// Plazos fijos vencidos de cualquier cliente: se acreditan antes de listar saldos.
+acreditarPlazosVencidos($conexion);
 
 // ---------- Buscador: por número de cuenta, apellido o DNI del titular ----------
 $busqueda = campo($_GET, "q");
