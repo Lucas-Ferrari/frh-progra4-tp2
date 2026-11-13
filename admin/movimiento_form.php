@@ -20,7 +20,7 @@ $movimiento = consultarUno(
 if ($movimiento === null) {
     redirigir("admin/cuentas.php?error=no_encontrado");
 }
-if ($movimiento["tipo"] === "Transferencia" || !$movimiento["activa"]) {
+if (!movimientoEditable($movimiento["tipo"]) || !$movimiento["activa"]) {
     redirigir("admin/movimientos.php?id_cuenta=" . (int) $movimiento["id_cuenta"] . "&error=no_editable");
 }
 

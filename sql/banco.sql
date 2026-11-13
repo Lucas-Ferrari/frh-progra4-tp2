@@ -4,6 +4,9 @@
 --   mysql -u root -p < sql/banco.sql
 -- =====================================================================
 
+-- Los acentos del archivo se leen como UTF-8 aunque se importe desde la consola
+SET NAMES utf8mb4;
+
 DROP DATABASE IF EXISTS banco;
 CREATE DATABASE banco CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE banco;
@@ -58,10 +61,53 @@ CREATE TABLE movimientos (
     id_movimiento INT AUTO_INCREMENT PRIMARY KEY,
     id_cuenta INT NOT NULL,
     fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    tipo ENUM('Depósito', 'Extracción', 'Transferencia') NOT NULL,
+    -- 'Plazo fijo' y 'Reserva': plata que sale de la cuenta hacia una inversión (o vuelve)
+    tipo ENUM('Depósito', 'Extracción', 'Transferencia', 'Plazo fijo', 'Reserva') NOT NULL,
     monto DECIMAL(12,2) NOT NULL,
     descripcion VARCHAR(150) NOT NULL DEFAULT '',
     CONSTRAINT fk_movimientos_cuentas FOREIGN KEY (id_cuenta) REFERENCES cuentas(id_cuenta)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- Plazos fijos.
+-- El interés se calcula y se guarda al constituirlo: es lo que el banco
+-- se compromete a pagar, aunque después cambie la tasa.
+-- Al vencer, el sistema acredita capital + interés en la cuenta y lo
+-- marca 'Acreditado' (ver acreditarPlazosVencidos() en includes/inversiones.php).
+-- ---------------------------------------------------------------------
+CREATE TABLE plazos_fijos (
+    id_plazo_fijo INT AUTO_INCREMENT PRIMARY KEY,
+    id_cuenta INT NOT NULL,
+    capital DECIMAL(12,2) NOT NULL,
+    tna DECIMAL(5,2) NOT NULL,                  -- tasa nominal anual en %, ej. 20.00
+    dias SMALLINT NOT NULL,
+    interes DECIMAL(12,2) NOT NULL,
+    fecha_alta DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_vencimiento DATETIME NOT NULL,
+    estado ENUM('Activo', 'Acreditado') NOT NULL DEFAULT 'Activo',
+    fecha_acreditacion DATETIME NULL,
+    INDEX idx_plazos_vencimiento (estado, fecha_vencimiento),
+    CONSTRAINT fk_plazos_cuentas FOREIGN KEY (id_cuenta) REFERENCES cuentas(id_cuenta)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- Reservas (como las de Mercado Pago): plata separada del saldo de la
+-- cuenta que rinde todos los días y se puede retirar en cualquier momento.
+-- El rendimiento no se calcula con una tarea programada: cada vez que se
+-- consulta o se mueve la reserva se suman los días transcurridos desde
+-- fecha_calculo (ver actualizarRendimientoReservas()).
+-- ---------------------------------------------------------------------
+CREATE TABLE reservas (
+    id_reserva INT AUTO_INCREMENT PRIMARY KEY,
+    id_cuenta INT NOT NULL,
+    nombre VARCHAR(40) NOT NULL,
+    meta DECIMAL(12,2) NULL,                    -- opcional: cuánto quiere juntar
+    saldo DECIMAL(12,2) NOT NULL DEFAULT 0,
+    rendimientos DECIMAL(12,2) NOT NULL DEFAULT 0,  -- total ganado desde que se creó
+    fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_calculo DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- último día sumado al rendimiento
+    activa TINYINT(1) NOT NULL DEFAULT 1,       -- baja lógica al cerrarla
+    CONSTRAINT fk_reservas_cuentas FOREIGN KEY (id_cuenta) REFERENCES cuentas(id_cuenta)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -132,6 +178,33 @@ INSERT INTO movimientos (id_cuenta, fecha, tipo, monto, descripcion) VALUES
 (5, '2025-03-01 12:00:00', 'Extracción',      -450.00, 'Pago de viaje'),
 (6, '2025-03-01 17:26:00', 'Depósito',       10000.00, 'Saldo inicial'),
 (7, '2025-03-05 12:06:00', 'Depósito',        5000.00, 'Saldo inicial');
+
+-- ---------------------------------------------------------------------
+-- Inversiones de prueba (Diego). Las fechas son relativas a NOW() para
+-- que la demo funcione el día que se importe la base:
+--   · un plazo fijo ya acreditado (historial)
+--   · un plazo fijo activo que vence en 20 días
+--   · un plazo fijo VENCIDO sin acreditar: se acredita solo la primera vez
+--     que Diego entra a su panel (así se puede mostrar en la presentación)
+--   · dos reservas con 15 días de rendimiento pendiente de sumar
+-- Interés = capital × TNA × días / 36500 (redondeado a centavos).
+-- ---------------------------------------------------------------------
+INSERT INTO movimientos (id_cuenta, fecha, tipo, monto, descripcion) VALUES
+(1, '2025-03-10 10:00:00',          'Plazo fijo',  -50000.00, 'Constitución de plazo fijo a 30 días'),
+(1, '2025-04-09 10:00:00',          'Plazo fijo',   50821.92, 'Acreditación de plazo fijo (capital + interés)'),
+(1, NOW() - INTERVAL 35 DAY,        'Plazo fijo', -100000.00, 'Constitución de plazo fijo a 30 días'),
+(1, NOW() - INTERVAL 10 DAY,        'Plazo fijo', -200000.00, 'Constitución de plazo fijo a 30 días'),
+(1, NOW() - INTERVAL 15 DAY,        'Reserva',    -120000.00, 'Ingreso a reserva "Vacaciones"'),
+(2, NOW() - INTERVAL 15 DAY,        'Reserva',       -200.00, 'Ingreso a reserva "Ahorro en dólares"');
+
+INSERT INTO plazos_fijos (id_cuenta, capital, tna, dias, interes, fecha_alta, fecha_vencimiento, estado, fecha_acreditacion) VALUES
+(1,  50000.00, 20.00, 30, 821.92, '2025-03-10 10:00:00',   '2025-04-09 10:00:00',  'Acreditado', '2025-04-09 10:00:00'),
+(1, 100000.00, 20.00, 30, 1643.84, NOW() - INTERVAL 35 DAY, NOW() - INTERVAL 5 DAY, 'Activo', NULL),
+(1, 200000.00, 20.00, 30, 3287.67, NOW() - INTERVAL 10 DAY, NOW() + INTERVAL 20 DAY, 'Activo', NULL);
+
+INSERT INTO reservas (id_cuenta, nombre, meta, saldo, rendimientos, fecha_creacion, fecha_calculo) VALUES
+(1, 'Vacaciones',        300000.00, 120000.00, 0, NOW() - INTERVAL 15 DAY, NOW() - INTERVAL 15 DAY),
+(2, 'Ahorro en dólares',      NULL,    200.00, 0, NOW() - INTERVAL 15 DAY, NOW() - INTERVAL 15 DAY);
 
 -- El saldo de cada cuenta se calcula a partir de sus movimientos,
 -- así los datos de prueba quedan siempre consistentes.

@@ -5,6 +5,7 @@
 
 require_once(__DIR__ . "/../includes/auth.php");
 require_once(__DIR__ . "/../includes/conexion.php");
+require_once(__DIR__ . "/../includes/inversiones.php");
 
 requerirPasswordActualizada();
 requerirRol([ROL_ADMIN]);
@@ -89,6 +90,11 @@ if ($accion === "modificar") {
 if ($accion === "baja") {
     if ((float) $cuenta["saldo"] != 0) {
         redirigir("admin/cuentas.php?error=cuenta_saldo");
+    }
+    // Saldo 0 no alcanza: si tiene plata en un plazo fijo o en una reserva,
+    // al darla de baja esa plata quedaría sin cuenta a donde volver.
+    if (cuentaTieneInversiones($conexion, $idCuenta)) {
+        redirigir("admin/cuentas.php?error=cuenta_inversiones");
     }
 
     // Una cuenta con movimientos no se borra (perderíamos el historial):
